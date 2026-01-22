@@ -466,18 +466,46 @@
             .toolbar-buttons,
             .save-indicator,
             .file-management-section,
+            .setup-container,
+            .setup-section,
+            .rotation-schedule-display,
             button {
+                display: none !important;
+            }
+            
+            .header {
                 display: none !important;
             }
             
             .container {
                 box-shadow: none;
                 border-radius: 0;
+                max-width: 100%;
+                padding: 0;
             }
             
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
+            }
+            
+            .schedule-output {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            .print-header {
+                display: block !important;
+                page-break-after: avoid;
+            }
+            
+            .schedule-container {
+                margin-top: 0 !important;
+            }
+            
+            .cycle-section {
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -510,7 +538,7 @@
             <div class="file-management-section">
                 <button class="file-btn" onclick="saveToFile()">💾 Download Backup</button>
                 <button class="file-btn" onclick="loadFromFile()">📂 Load Backup</button>
-                <button class="file-btn" onclick="printSchedule()">🖨️ Print</button>
+                <button class="file-btn" onclick="exportPDF()">📄 Export PDF</button>
                 <button class="file-btn" onclick="exportSchedule()">📥 Export to CSV</button>
                 <input type="file" id="fileInput" style="display: none;" accept=".json">
             </div>
@@ -551,23 +579,7 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">4</span>
-                        <span class="step-title">Unexpected School Closures (Optional)</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="unexpectedClosures">Add any snow days or unexpected closures</label>
-                        <input type="text" id="unexpectedClosures" placeholder="e.g., 2026-01-15, 2026-02-03">
-                        <div class="help-text">Format: YYYY-MM-DD, separated by commas</div>
-                    </div>
-                </div>
-                
-                <div class="setup-step">
-                    <div class="step-header">
-                        <span class="step-number">5</span>
                         <span class="step-title">Generate Schedule</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="numCycles">Number of Cycles to Generate</label>
-                        <input type="number" id="numCycles" min="1" max="10" value="4" style="width: 100px;">
                     </div>
                     <div class="action-buttons">
                         <button onclick="generateSchedule()">📅 Generate Schedule</button>
@@ -637,6 +649,17 @@
             { date: new Date('2026-11-24T00:00:00'), name: 'Grandparents Day' }
         ];
         
+        // ────────────────────────────────────────────────────────────────────────────
+        // 4️⃣  EXAM PERIOD DATES (final exams, midterms, etc.)
+        // These days show "EXAM PERIOD" with no specific class periods
+        // Add or remove lines as needed. Format: { date: new Date('YYYY-MM-DDTHH:MM:SS'), name: 'Exam Name' }
+        // ────────────────────────────────────────────────────────────────────────────
+        const EXAM_DATES = [
+            { date: new Date('2026-12-14T00:00:00'), name: 'Final Exams - Day 1' },
+            { date: new Date('2026-12-15T00:00:00'), name: 'Final Exams - Day 2' },
+            { date: new Date('2026-12-16T00:00:00'), name: 'Final Exams - Day 3' }
+        ];
+        
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║   ⬆️  END OF EASY EDIT SECTION ⬆️                                           ║
         // ║   Everything below this line should NOT need to be changed!                ║
@@ -678,8 +701,6 @@
                 teacherName: document.getElementById('teacherName').value,
                 classData: classData,
                 specialRules: document.getElementById('specialRules').value,
-                unexpectedClosures: document.getElementById('unexpectedClosures').value,
-                numCycles: document.getElementById('numCycles').value,
                 savedAt: new Date().toISOString(),
                 version: '2.0' // Version tracking for future compatibility
             };
@@ -702,15 +723,6 @@
                         document.getElementById('specialRules').value = data.specialRules;
                     }
                     
-                    // Restore unexpected closures
-                    if (data.unexpectedClosures) {
-                        document.getElementById('unexpectedClosures').value = data.unexpectedClosures;
-                    }
-                    
-                    // Restore num cycles
-                    if (data.numCycles) {
-                        document.getElementById('numCycles').value = data.numCycles;
-                    }
                     
                     // Restore classes
                     if (data.classData && Object.keys(data.classData).length > 0) {
@@ -821,7 +833,7 @@
         }
         
         // Print schedule
-        function printSchedule() {
+        function exportPDF() {
             window.print();
         }
         
@@ -833,8 +845,6 @@
                 // Clear form fields
                 document.getElementById('teacherName').value = '';
                 document.getElementById('specialRules').value = '';
-                document.getElementById('unexpectedClosures').value = '';
-                document.getElementById('numCycles').value = '4';
                 
                 // Clear classes and add one default
                 document.getElementById('classesContainer').innerHTML = '';
@@ -872,12 +882,6 @@
                         }
                         if (data.specialRules !== undefined) {
                             document.getElementById('specialRules').value = data.specialRules;
-                        }
-                        if (data.unexpectedClosures !== undefined) {
-                            document.getElementById('unexpectedClosures').value = data.unexpectedClosures;
-                        }
-                        if (data.numCycles !== undefined) {
-                            document.getElementById('numCycles').value = data.numCycles;
                         }
                         
                         // Restore classes
@@ -923,8 +927,6 @@
             // Add listeners to all inputs for auto-save
             document.getElementById('teacherName').addEventListener('input', autoSave);
             document.getElementById('specialRules').addEventListener('input', autoSave);
-            document.getElementById('unexpectedClosures').addEventListener('input', autoSave);
-            document.getElementById('numCycles').addEventListener('change', autoSave);
         }
         
         function addClass() {
@@ -1026,34 +1028,37 @@
             return rules;
         }
         
-        function parseUnexpectedDays() {
-            const input = document.getElementById('unexpectedClosures').value;
-            const dates = [];
-            
-            if (!input.trim()) return dates;
-            
-            input.split(',').forEach(dateStr => {
-                const trimmed = dateStr.trim();
-                if (trimmed) {
-                    const date = new Date(trimmed + 'T00:00:00');
-                    if (!isNaN(date.getTime())) {
-                        dates.push(date);
-                    }
-                }
-            });
-            
-            return dates;
-        }
-        
         function generateSchedule() {
             updateClassData();
             
-            const numCycles = parseInt(document.getElementById('numCycles').value);
-            const specialRules = parseSpecialRules(document.getElementById('specialRules').value);
-            const unexpectedDays = parseUnexpectedDays();
+            // Auto-calculate number of cycles based on semester length
+            const startDate = new Date(SEMESTER_START);
+            const endDate = new Date(SEMESTER_END);
+            let schoolDays = 0;
+            let tempDate = new Date(startDate);
             
-            // Combine all no-school days
-            const allNoSchoolDays = [...SCHEDULED_NO_SCHOOL_DAYS, ...unexpectedDays];
+            while (tempDate <= endDate) {
+                const dayOfWeek = tempDate.getDay();
+                // Count weekdays (Mon-Fri)
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    // Check if it's not a no-school day
+                    const isNoSchool = SCHEDULED_NO_SCHOOL_DAYS.some(d => 
+                        tempDate.toDateString() === d.date.toDateString()
+                    );
+                    if (!isNoSchool) {
+                        schoolDays++;
+                    }
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            
+            // Each cycle is 7 days, round up
+            const numCycles = Math.ceil(schoolDays / 7);
+            
+            const specialRules = parseSpecialRules(document.getElementById('specialRules').value);
+            
+            // Use only scheduled no-school days
+            const allNoSchoolDays = [...SCHEDULED_NO_SCHOOL_DAYS];
             
             // Create a mapping of periods to classes
             const periodToClass = {};
@@ -1074,7 +1079,31 @@
                 });
             });
             
-            let output = '<div class="schedule-container">';
+            // Create print header
+            const teacherName = document.getElementById('teacherName').value;
+            const courseList = Object.values(classData).map(cls => cls.name).join(', ');
+            const rotationInfo = Object.entries(ROTATION_SCHEDULE).map(([day, periods]) => 
+                `Day ${day}: ${periods.join(', ')}`
+            ).join(' | ');
+            
+            let output = `
+                <div style="display: none;" class="print-header">
+                    <h2 style="text-align: center; color: #1B5E3F; margin-bottom: 10px;">Webb School Schedule</h2>
+                    <p style="margin: 5px 0;"><strong>Teacher:</strong> ${teacherName}</p>
+                    <p style="margin: 5px 0;"><strong>Courses:</strong> ${courseList}</p>
+                    <p style="margin: 5px 0; font-size: 12px;"><strong>Rotation Pattern:</strong> ${rotationInfo}</p>
+                    <hr style="margin: 15px 0; border: 1px solid #8DC63F;">
+                </div>
+                <style>
+                    @media print {
+                        .print-header {
+                            display: block !important;
+                        }
+                    }
+                </style>
+            `;
+            
+            output += '<div class="schedule-container">';
             let currentDate = new Date(SEMESTER_START);
             let rotationDay = 1;
             
@@ -1092,15 +1121,35 @@
                         currentDate.setDate(currentDate.getDate() + 1);
                     }
                     
+                    // Check if this is an exam day
+                    const examDay = EXAM_DATES.find(d => 
+                        currentDate.toDateString() === d.date.toDateString()
+                    );
+                    
+                    if (examDay) {
+                        const dateStr = currentDate.toLocaleDateString('en-US', { 
+                            weekday: 'short', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        });
+                        
+                        output += `<div class="day-row" style="background: #FFF9E6; border-left: 4px solid #EF7D34;">`;
+                        output += `<div class="day-label">Exam</div>`;
+                        output += `<div class="date-label">${dateStr}</div>`;
+                        output += `<div class="lessons-container">`;
+                        output += `<span style="color: #EF7D34; font-weight: 600;">${examDay.name}</span>`;
+                        output += `</div></div>`;
+                        
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        continue; // Don't advance rotation day for exam days
+                    }
+                    
                     // Check if this is a no-school day
                     const scheduledOff = SCHEDULED_NO_SCHOOL_DAYS.find(d => 
                         currentDate.toDateString() === d.date.toDateString()
                     );
-                    const isUnexpectedOff = unexpectedDays.some(d => 
-                        currentDate.toDateString() === d.toDateString()
-                    );
                     
-                    if (scheduledOff || isUnexpectedOff) {
+                    if (scheduledOff) {
                         const dateStr = currentDate.toLocaleDateString('en-US', { 
                             weekday: 'short', 
                             month: 'short', 
@@ -1111,12 +1160,7 @@
                         output += `<div class="day-label">Day ${rotationDay}</div>`;
                         output += `<div class="date-label">${dateStr}</div>`;
                         output += `<div class="lessons-container">`;
-                        
-                        if (isUnexpectedOff) {
-                            output += `<span class="no-school-label">Unexpected Closure</span>`;
-                        } else {
-                            output += `<span class="no-school-label">${scheduledOff.name}</span>`;
-                        }
+                        output += `<span class="no-school-label">${scheduledOff.name}</span>`;
                         output += `</div></div>`;
                         
                         currentDate.setDate(currentDate.getDate() + 1);
@@ -1245,13 +1289,31 @@
         }
         
         function exportSchedule() {
-            const numCycles = parseInt(document.getElementById('numCycles').value);
+            // Auto-calculate number of cycles based on semester length
+            const startDate = new Date(SEMESTER_START);
+            const endDate = new Date(SEMESTER_END);
+            let schoolDays = 0;
+            let tempDate = new Date(startDate);
+            
+            while (tempDate <= endDate) {
+                const dayOfWeek = tempDate.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    const isNoSchool = SCHEDULED_NO_SCHOOL_DAYS.some(d => 
+                        tempDate.toDateString() === d.date.toDateString()
+                    );
+                    if (!isNoSchool) {
+                        schoolDays++;
+                    }
+                }
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            
+            const numCycles = Math.ceil(schoolDays / 7);
             const teacherName = document.getElementById('teacherName').value;
             const specialRules = parseSpecialRules(document.getElementById('specialRules').value);
-            const unexpectedDays = parseUnexpectedDays();
             
-            // Combine all no-school days
-            const allNoSchoolDays = [...SCHEDULED_NO_SCHOOL_DAYS, ...unexpectedDays];
+            // Use only scheduled no-school days
+            const allNoSchoolDays = [...SCHEDULED_NO_SCHOOL_DAYS];
             
             // Create period-to-class mapping
             const periodToClass = {};
@@ -1306,19 +1368,31 @@
                     const scheduledOff = SCHEDULED_NO_SCHOOL_DAYS.find(d => 
                         currentDate.toDateString() === d.date.toDateString()
                     );
-                    const isUnexpectedOff = unexpectedDays.some(d => 
-                        currentDate.toDateString() === d.toDateString()
+                    
+                    const examDay = EXAM_DATES.find(d => 
+                        currentDate.toDateString() === d.date.toDateString()
                     );
                     
                     const dateStr = currentDate.toISOString().split('T')[0];
                     const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
                     
-                    if (scheduledOff || isUnexpectedOff) {
+                    if (examDay) {
+                        let row = `${dateStr},${dayName},Exam,` + allPeriods.map(p => 'Exam Period').join(',');
+                        if (specialClassNames.length > 0) {
+                            row += ',' + specialClassNames.map(c => 'Exam Period').join(',');
+                        }
+                        row += ',' + examDay.name;
+                        csv += row + '\n';
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        continue;
+                    }
+                    
+                    if (scheduledOff) {
                         let row = `${dateStr},${dayName},Day ${rotationDay},` + allPeriods.map(p => 'No School').join(',');
                         if (specialClassNames.length > 0) {
                             row += ',' + specialClassNames.map(c => 'No School').join(',');
                         }
-                        row += ',' + (isUnexpectedOff ? 'Unexpected Closure' : scheduledOff.name);
+                        row += ',' + scheduledOff.name;
                         csv += row + '\n';
                         currentDate.setDate(currentDate.getDate() + 1);
                         continue;
