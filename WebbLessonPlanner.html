@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webb Lesson Planner - Curriculum Planning Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E3F 0%, #8DC63F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+        
+        .toolbar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #C9C49D;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .toolbar button {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        
+        .toolbar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 94, 63, 0.3);
+            background: #2B7A78;
+        }
+        
+        .toolbar .secondary-btn {
+            background: #3D4241;
+        }
+        
+        .toolbar .secondary-btn:hover {
+            background: #555;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #C9C49D;
+            overflow-x: auto;
+            padding: 10px 20px 0 20px;
+            gap: 5px;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            color: #3D4241;
+            background: white;
+            border: 2px solid #C9C49D;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: -3px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .tab:hover {
+            background: #F0F8F5;
+            color: #1B5E3F;
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            color: white;
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            border-color: #1B5E3F;
+            transform: translateY(-2px);
+            box-shadow: 0 -2px 8px rgba(27, 94, 63, 0.2);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .class-section {
+            display: none;
+        }
+        
+        .class-section.active {
+            display: block;
+        }
+        
+        .cycle-section {
+            background: white;
+            border: 2px solid #C9C49D;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .cycle-header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .cycle-header:hover {
+            background: linear-gradient(135deg, #2B7A78 0%, #1B5E3F 100%);
+        }
+        
+        .cycle-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+        }
+        
+        .cycle-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .cycle-content {
+            padding: 20px;
+            max-height: 5000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .cycle-content.collapsed {
+            max-height: 0;
+            padding: 0 20px;
+        }
+        
+        .lesson-card {
+            background: #F0F8F5;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .lesson-number {
+            background: #8DC63F;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .lesson-number.day-zero {
+            background: #EF7D34;
+        }
+        
+        .lesson-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .period-badge {
+            background: #2B7A78;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .date-badge {
+            background: #3D4241;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .lesson-title-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #C9C49D;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .lesson-title-input:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+        
+        .lesson-notes {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #C9C49D;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        
+        .lesson-notes:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+        
+        .links-section {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .links-header {
+            font-weight: 600;
+            color: #3D4241;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-link-btn {
+            background: #EF7D34;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .add-link-btn:hover {
+            background: #d96a25;
+        }
+        
+        .link-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .link-name-input {
+            flex: 2;
+            padding: 8px;
+            border: 1px solid #C9C49D;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .link-url-input {
+            flex: 3;
+            padding: 8px;
+            border: 1px solid #C9C49D;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .link-name-input:focus,
+        .link-url-input:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+        
+        .remove-link-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .remove-link-btn:hover {
+            background: #c82333;
+        }
+        
+        .links-display {
+            margin-top: 10px;
+        }
+        
+        .link-display-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .link-display-item a {
+            color: #1B5E3F;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .link-display-item a:hover {
+            text-decoration: underline;
+            color: #2B7A78;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h2 {
+            color: #3D4241;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state button {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .empty-state button:hover {
+            background: #2B7A78;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .info-banner {
+            background: #E8F4F8;
+            border: 1px solid #B3D9E8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #2B7A78;
+        }
+        
+        .save-indicator {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .save-indicator.saved {
+            background: rgba(76, 175, 80, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" style="position: relative;">
+            <button onclick="clearAll()" style="position: absolute; top: 20px; left: 20px; padding: 10px 20px; background: #8DC63F; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">🗑️ Clear All</button>
+            <h1>📚 Webb Lesson Planner</h1>
+            <p>Curriculum Planning Tool - Organize lessons by class and cycle</p>
+        </div>
+        
+        <div class="toolbar">
+            <button onclick="importSchedule()">📥 Import Schedule (JSON)</button>
+            <button onclick="importScheduleCSV()">📅 Import Dates (CSV)</button>
+            <button onclick="loadPlans()">📂 Load Plans</button>
+            <button onclick="savePlans()">💾 Save Plans</button>
+            <button onclick="exportPlans()">📤 Export to CSV</button>
+            <button class="secondary-btn" onclick="printPlans()">🖨️ Print</button>
+            <div class="save-indicator" id="saveIndicator">
+                <span id="saveStatus">Ready</span>
+            </div>
+            <input type="file" id="scheduleInput" accept=".json">
+            <input type="file" id="scheduleCSVInput" accept=".csv">
+            <input type="file" id="plansInput" accept=".json">
+        </div>
+        
+        <div id="tabsContainer" class="tabs"></div>
+        
+        <div class="content" id="mainContent">
+            <div class="empty-state">
+                <h2>Welcome to Webb Lesson Planner!</h2>
+                <p>Import your schedule data from the Webb Schedule Builder to get started.</p>
+                <p style="margin-top: 10px;">Click "Import Schedule" above and select your schedule JSON file.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let scheduleData = null;
+        let scheduleDates = {}; // Store dates for each class/cycle/lesson
+        let lessonPlans = {};
+        let currentClass = null;
+        let autoSaveTimeout = null;
+        
+        // Import schedule CSV to get dates
+        function importScheduleCSV() {
+            document.getElementById('scheduleCSVInput').click();
+        }
+        
+        document.getElementById('scheduleCSVInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const csvText = event.target.result;
+                    parseScheduleCSV(csvText);
+                    updateSaveIndicator('Schedule dates imported!');
+                    // Refresh current view if a class is selected
+                    if (currentClass) {
+                        renderClassContent(currentClass);
+                    }
+                } catch (error) {
+                    alert('Error reading CSV file.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+        
+        // Parse CSV to extract lesson dates
+        function parseScheduleCSV(csvText) {
+            const lines = csvText.split('\n');
+            if (lines.length < 2) return;
+            
+            // Parse header to find column indices
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const dateIdx = headers.indexOf('Date');
+            const rotationDayIdx = headers.indexOf('Rotation Day');
+            
+            // Find period columns (Period A, Period B, etc.)
+            const periodColumns = {};
+            headers.forEach((header, idx) => {
+                const match = header.match(/Period ([A-G])/);
+                if (match) {
+                    periodColumns[match[1]] = idx;
+                }
+            });
+            
+            // Find special rule columns (class names that aren't periods)
+            const specialColumns = {};
+            headers.forEach((header, idx) => {
+                // Skip known columns and period columns
+                if (header !== 'Date' && header !== 'Day' && header !== 'Rotation Day' && 
+                    header !== 'Notes' && !header.startsWith('Period ')) {
+                    specialColumns[header] = idx;
+                }
+            });
+            
+            console.log('Found special rule columns:', specialColumns);
+            
+            // Process each row
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const cols = line.split(',').map(c => c.trim().replace(/"/g, ''));
+                const date = cols[dateIdx];
+                const dayName = cols[1]; // Day column
+                const rotationDay = cols[rotationDayIdx];
+                
+                if (!date || !rotationDay) continue;
+                
+                // Parse the date correctly (avoid timezone issues)
+                // Split YYYY-MM-DD format
+                const [year, month, day] = date.split('-').map(n => parseInt(n));
+                const monthDay = `${month}/${day}`;
+                
+                if (i < 5) {
+                    console.log(`Row ${i}: Date=${date}, Day=${dayName}, MonthDay=${monthDay}, RotationDay=${rotationDay}`);
+                }
+                
+                // Extract cycle and lesson from each period
+                Object.keys(periodColumns).forEach(period => {
+                    const cellContent = cols[periodColumns[period]];
+                    if (!cellContent || cellContent === 'No School' || cellContent === '') return;
+                    
+                    // Parse "ClassName - Lesson X.Y" format
+                    const match = cellContent.match(/(.+?)\s*-\s*Lesson\s+(\d+)\.(\d+)/);
+                    if (match) {
+                        const className = match[1].trim();
+                        const cycle = match[2];
+                        const lesson = match[3];
+                        
+                        // Store the date
+                        const key = `${className}|${period}|${cycle}|${lesson}`;
+                        if (!scheduleDates[key]) {
+                            scheduleDates[key] = monthDay;
+                        }
+                    }
+                    
+                    // Also check for Day Zero (Lesson 0.0)
+                    const zeroMatch = cellContent.match(/(.+?)\s*-\s*Lesson\s+0\.0/);
+                    if (zeroMatch) {
+                        const className = zeroMatch[1].trim();
+                        const key = `${className}|${period}|0|0`;
+                        if (!scheduleDates[key]) {
+                            scheduleDates[key] = monthDay;
+                        }
+                    }
+                });
+                
+                // Extract session info from special rule columns (like WebbPress)
+                Object.keys(specialColumns).forEach(className => {
+                    const colIdx = specialColumns[className];
+                    const cellContent = cols[colIdx];
+                    
+                    if (i === 2) { // Debug second row which should have WebbPress Session 1
+                        console.log(`Special column "${className}" (index ${colIdx}): "${cellContent}"`);
+                    }
+                    
+                    if (!cellContent || cellContent === '') return;
+                    
+                    // Parse "ClassName - Session X" format
+                    // Make sure the className in the cell matches the column header
+                    const sessionMatch = cellContent.match(/^(.+?)\s*-\s*Session\s+(\d+)$/);
+                    if (sessionMatch) {
+                        const cellClassName = sessionMatch[1].trim();
+                        const sessionNum = sessionMatch[2];
+                        
+                        // Only store if the class name matches the column
+                        if (cellClassName === className) {
+                            const key = `${className}|session|${sessionNum}`;
+                            if (!scheduleDates[key]) {
+                                console.log(`Adding session: ${className} Session ${sessionNum} on ${monthDay} (${dayName})`);
+                                scheduleDates[key] = monthDay;
+                            }
+                        }
+                    }
+                });
+            }
+            
+            console.log('Parsed schedule dates:', scheduleDates);
+        }
+        
+        // Import schedule from JSON
+        function importSchedule() {
+            document.getElementById('scheduleInput').click();
+        }
+        
+        document.getElementById('scheduleInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    scheduleData = data;
+                    initializePlanner();
+                    updateSaveIndicator('Schedule imported!');
+                } catch (error) {
+                    alert('Error reading schedule file. Please make sure it\'s a valid JSON file from the Webb Schedule Builder.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            // Reset the input so the same file can be selected again
+            e.target.value = '';
+        });
+        
+        // Initialize the planner with schedule data
+        function initializePlanner() {
+            if (!scheduleData || !scheduleData.classData) {
+                alert('Invalid schedule data');
+                return;
+            }
+            
+            // Initialize lesson plans structure for regular classes
+            Object.keys(scheduleData.classData).forEach(classId => {
+                const classInfo = scheduleData.classData[classId];
+                if (!lessonPlans[classId]) {
+                    lessonPlans[classId] = {
+                        className: classInfo.name,
+                        periods: classInfo.periods,
+                        cycles: {},
+                        isSpecialRule: false
+                    };
+                }
+            });
+            
+            // Parse and add special rules classes (like WebbPress)
+            if (scheduleData.specialRules) {
+                parseSpecialRules(scheduleData.specialRules);
+            }
+            
+            renderTabs();
+            if (Object.keys(lessonPlans).length > 0) {
+                const firstClassId = Object.keys(lessonPlans)[0];
+                switchToClass(firstClassId);
+            }
+        }
+        
+        // Parse special rules to extract classes
+        function parseSpecialRules(rulesText) {
+            if (!rulesText || !rulesText.trim()) return;
+            
+            const lines = rulesText.split('\n');
+            lines.forEach(line => {
+                const match = line.match(/^(.+?)\s*-\s*(.+)$/);
+                if (match) {
+                    const className = match[1].trim();
+                    const days = match[2].split(',').map(d => d.trim());
+                    
+                    // Create a special class ID for this
+                    const classId = 'special_' + className.replace(/\s+/g, '_');
+                    
+                    if (!lessonPlans[classId]) {
+                        lessonPlans[classId] = {
+                            className: className,
+                            days: days,
+                            cycles: {},
+                            isSpecialRule: true
+                        };
+                    }
+                }
+            });
+        }
+        
+        // Render class tabs
+        function renderTabs() {
+            const tabsContainer = document.getElementById('tabsContainer');
+            tabsContainer.innerHTML = '';
+            
+            // First add regular classes
+            Object.keys(scheduleData.classData).forEach(classId => {
+                const classInfo = scheduleData.classData[classId];
+                const tab = document.createElement('div');
+                tab.className = 'tab';
+                tab.textContent = classInfo.name;
+                tab.onclick = () => switchToClass(classId);
+                tab.dataset.classId = classId;
+                tabsContainer.appendChild(tab);
+            });
+            
+            // Then add special rule classes
+            Object.keys(lessonPlans).forEach(classId => {
+                if (lessonPlans[classId].isSpecialRule) {
+                    const tab = document.createElement('div');
+                    tab.className = 'tab';
+                    tab.textContent = lessonPlans[classId].className;
+                    tab.onclick = () => switchToClass(classId);
+                    tab.dataset.classId = classId;
+                    tabsContainer.appendChild(tab);
+                }
+            });
+        }
+        
+        // Switch to a specific class
+        function switchToClass(classId) {
+            currentClass = classId;
+            
+            // Update tab active state
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.classId === classId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            renderClassContent(classId);
+        }
+        
+        // Render content for a specific class
+        function renderClassContent(classId) {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = '';
+            
+            const classInfo = lessonPlans[classId];
+            const numCycles = parseInt(scheduleData.numCycles) || 8;
+            
+            // Special handling for day-of-week classes (like WebbPress)
+            if (classInfo.isSpecialRule && classInfo.days) {
+                renderSpecialRuleClass(classId, classInfo);
+                return;
+            }
+            
+            // Regular rotation classes - create cycle sections
+            for (let cycle = 1; cycle <= numCycles; cycle++) {
+                const cycleSection = createCycleSection(classId, cycle, classInfo);
+                content.appendChild(cycleSection);
+            }
+        }
+        
+        // Render special rule classes (day-of-week based) with actual dates
+        function renderSpecialRuleClass(classId, classInfo) {
+            const content = document.getElementById('mainContent');
+            
+            // Get all the dates this class meets from scheduleDates
+            const meetingDates = [];
+            Object.keys(scheduleDates).forEach(key => {
+                const parts = key.split('|');
+                const [className, type, sessionNum] = parts;
+                
+                // Look for session-based entries for this class
+                if (className === classInfo.className && type === 'session') {
+                    meetingDates.push({
+                        sessionNum: parseInt(sessionNum),
+                        date: scheduleDates[key],
+                        sortKey: new Date('2026-' + scheduleDates[key].replace(/(\d+)\/(\d+)/, '$1-$2'))
+                    });
+                }
+            });
+            
+            // Sort by session number
+            meetingDates.sort((a, b) => a.sessionNum - b.sessionNum);
+            
+            // If no dates found, show generic sessions
+            if (meetingDates.length === 0) {
+                // Show generic sessions grouped by semester
+                const section = document.createElement('div');
+                section.className = 'cycle-section';
+                section.innerHTML = `
+                    <div class="cycle-header">${classInfo.className} - Sessions</div>
+                    <div class="cycle-content">
+                        <p style="padding: 20px; color: #666;">
+                            Import your schedule CSV to see specific meeting dates for ${classInfo.className}.<br>
+                            This class meets on: ${classInfo.days.join(', ')}
+                        </p>
+                    </div>
+                `;
+                content.appendChild(section);
+                return;
+            }
+            
+            // Create a section for each meeting date
+            meetingDates.forEach((meeting) => {
+                const card = createSpecialRuleDateCard(classId, meeting.sessionNum, meeting.date, classInfo);
+                content.appendChild(card);
+            });
+        }
+        
+        // Create a card for a specific meeting date (for special rule classes)
+        function createSpecialRuleDateCard(classId, sessionNum, dateStr, classInfo) {
+            const card = document.createElement('div');
+            card.className = 'lesson-card';
+            card.style.marginBottom = '15px';
+            
+            // Get existing plan data if any
+            const planData = lessonPlans[classId]?.sessions?.[sessionNum] || {
+                title: '',
+                notes: '',
+                links: []
+            };
+            
+            // Header
+            const header = document.createElement('div');
+            header.className = 'lesson-header';
+            
+            const sessionNumber = document.createElement('div');
+            sessionNumber.className = 'lesson-number';
+            sessionNumber.textContent = `Session ${sessionNum}`;
+            
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.className = 'lesson-title-input';
+            titleInput.placeholder = 'Session title...';
+            titleInput.value = planData.title || '';
+            titleInput.addEventListener('input', () => {
+                saveSessionData(classId, sessionNum, 'title', titleInput.value);
+            });
+            
+            header.appendChild(sessionNumber);
+            
+            // Add date badge and calculate the day of week for THIS specific date
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'lesson-meta';
+            
+            const dateBadge = document.createElement('span');
+            dateBadge.className = 'period-badge';
+            dateBadge.textContent = dateStr;
+            metaDiv.appendChild(dateBadge);
+            
+            // Calculate the actual day of week from the date
+            const [month, day] = dateStr.split('/').map(n => parseInt(n));
+            const dateObj = new Date(2026, month - 1, day);
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const actualDayOfWeek = dayNames[dateObj.getDay()];
+            
+            const dayBadge = document.createElement('span');
+            dayBadge.className = 'period-badge';
+            dayBadge.textContent = actualDayOfWeek;
+            metaDiv.appendChild(dayBadge);
+            
+            header.appendChild(metaDiv);
+            header.appendChild(titleInput);
+            
+            // Notes
+            const notesArea = document.createElement('textarea');
+            notesArea.className = 'lesson-notes';
+            notesArea.placeholder = 'Session notes...';
+            notesArea.value = planData.notes || '';
+            notesArea.addEventListener('input', () => {
+                saveSessionData(classId, sessionNum, 'notes', notesArea.value);
+            });
+            
+            // Links section
+            const linksSection = document.createElement('div');
+            linksSection.className = 'links-section';
+            
+            const linksHeader = document.createElement('div');
+            linksHeader.className = 'links-header';
+            linksHeader.innerHTML = '<span>📎 Resources & Links</span>';
+            
+            const addLinkBtn = document.createElement('button');
+            addLinkBtn.className = 'add-link-btn';
+            addLinkBtn.textContent = '+ Add Link';
+            addLinkBtn.onclick = () => addSessionLinkInput(classId, sessionNum, linksSection);
+            
+            linksHeader.appendChild(addLinkBtn);
+            linksSection.appendChild(linksHeader);
+            
+            const linksDisplay = document.createElement('div');
+            linksDisplay.className = 'links-display';
+            linksDisplay.id = `links-display-${classId}-session-${sessionNum}`;
+            
+            linksSection.appendChild(linksDisplay);
+            
+            card.appendChild(header);
+            card.appendChild(notesArea);
+            card.appendChild(linksSection);
+            
+            // Show existing links
+            if (planData.links && planData.links.length > 0) {
+                setTimeout(() => {
+                    updateSessionLinksDisplay(classId, sessionNum, planData.links);
+                }, 0);
+            }
+            
+            return card;
+        }
+        
+        // Save session data for special rule classes
+        function saveSessionData(classId, sessionNum, field, value) {
+            if (!lessonPlans[classId]) {
+                lessonPlans[classId] = { sessions: {} };
+            }
+            if (!lessonPlans[classId].sessions) {
+                lessonPlans[classId].sessions = {};
+            }
+            if (!lessonPlans[classId].sessions[sessionNum]) {
+                lessonPlans[classId].sessions[sessionNum] = { title: '', notes: '', links: [] };
+            }
+            
+            lessonPlans[classId].sessions[sessionNum][field] = value;
+            triggerAutoSave();
+        }
+        
+        // Add link for sessions
+        function addSessionLinkInput(classId, sessionNum, container) {
+            const linkItem = document.createElement('div');
+            linkItem.className = 'link-item';
+            
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.className = 'link-name-input';
+            nameInput.placeholder = 'Link name...';
+            
+            const urlInput = document.createElement('input');
+            urlInput.type = 'url';
+            urlInput.className = 'link-url-input';
+            urlInput.placeholder = 'https://...';
+            
+            const enterBtn = document.createElement('button');
+            enterBtn.className = 'add-link-btn';
+            enterBtn.textContent = 'Enter';
+            enterBtn.style.padding = '6px 12px';
+            enterBtn.style.fontSize = '12px';
+            
+            const saveAndClear = () => {
+                const name = nameInput.value.trim();
+                const url = urlInput.value.trim();
+                
+                if (url) {
+                    const currentLinks = lessonPlans[classId]?.sessions?.[sessionNum]?.links || [];
+                    currentLinks.push({ name: name || url, url: url });
+                    saveSessionData(classId, sessionNum, 'links', currentLinks);
+                    updateSessionLinksDisplay(classId, sessionNum, currentLinks);
+                    nameInput.value = '';
+                    urlInput.value = '';
+                    urlInput.focus();
+                }
+            };
+            
+            enterBtn.onclick = saveAndClear;
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); saveAndClear(); }
+            });
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); saveAndClear(); }
+            });
+            
+            linkItem.appendChild(nameInput);
+            linkItem.appendChild(urlInput);
+            linkItem.appendChild(enterBtn);
+            
+            const display = container.querySelector('.links-display');
+            container.insertBefore(linkItem, display);
+        }
+        
+        // Update session links display
+        function updateSessionLinksDisplay(classId, sessionNum, links) {
+            const display = document.getElementById(`links-display-${classId}-session-${sessionNum}`);
+            if (!display) return;
+            
+            display.innerHTML = '';
+            
+            links.forEach((link, index) => {
+                if (link.url) {
+                    const item = document.createElement('div');
+                    item.className = 'link-display-item';
+                    item.style.display = 'flex';
+                    item.style.justifyContent = 'space-between';
+                    item.style.alignItems = 'center';
+                    
+                    const anchor = document.createElement('a');
+                    anchor.href = link.url;
+                    anchor.target = '_blank';
+                    anchor.textContent = link.name || link.url;
+                    
+                    const removeDisplayBtn = document.createElement('button');
+                    removeDisplayBtn.textContent = '✕';
+                    removeDisplayBtn.className = 'remove-link-btn';
+                    removeDisplayBtn.style.marginLeft = '10px';
+                    removeDisplayBtn.onclick = () => {
+                        const updatedLinks = links.filter((_, i) => i !== index);
+                        saveSessionData(classId, sessionNum, 'links', updatedLinks);
+                        updateSessionLinksDisplay(classId, sessionNum, updatedLinks);
+                    };
+                    
+                    item.appendChild(anchor);
+                    item.appendChild(removeDisplayBtn);
+                    display.appendChild(item);
+                }
+            });
+        }
+        
+        // Create a cycle section with lessons
+        function createCycleSection(classId, cycle, classInfo) {
+            const section = document.createElement('div');
+            section.className = 'cycle-section';
+            
+            const header = document.createElement('div');
+            header.className = 'cycle-header';
+            header.onclick = () => toggleCycle(section);
+            
+            const title = document.createElement('span');
+            title.textContent = `Cycle ${cycle}`;
+            
+            const toggle = document.createElement('span');
+            toggle.className = 'cycle-toggle';
+            toggle.textContent = '▼';
+            
+            header.appendChild(title);
+            header.appendChild(toggle);
+            
+            const content = document.createElement('div');
+            content.className = 'cycle-content';
+            
+            // Add Day Zero lesson (0.0) for Cycle 2 (or other cycles with Day Zero)
+            // Day Zero appears in Cycle 2 based on typical Webb schedules
+            if (cycle === 2 && !classInfo.isSpecialRule) {
+                const dayZeroCard = createDayZeroCard(classId, cycle, classInfo);
+                content.appendChild(dayZeroCard);
+            }
+            
+            // Create 4 lessons per cycle for rotation classes
+            for (let lesson = 1; lesson <= 4; lesson++) {
+                const lessonCard = createLessonCard(classId, cycle, lesson, classInfo);
+                content.appendChild(lessonCard);
+            }
+            
+            section.appendChild(header);
+            section.appendChild(content);
+            
+            return section;
+        }
+        
+        // Toggle cycle expansion
+        function toggleCycle(section) {
+            const content = section.querySelector('.cycle-content');
+            const toggle = section.querySelector('.cycle-toggle');
+            
+            content.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+        
+        // Create a Day Zero lesson card (all classes meet - lesson 0.0)
+        function createDayZeroCard(classId, cycle, classInfo) {
+            const card = document.createElement('div');
+            card.className = 'lesson-card';
+            card.style.background = '#FFF5F0'; // Slightly different background for Day Zero
+            
+            const lessonKey = '0.0';
+            
+            // Get existing plan data if any
+            const planData = lessonPlans[classId]?.cycles?.[cycle]?.['0'] || {
+                title: '',
+                notes: '',
+                links: []
+            };
+            
+            // Lesson header
+            const header = document.createElement('div');
+            header.className = 'lesson-header';
+            
+            const lessonNumber = document.createElement('div');
+            lessonNumber.className = 'lesson-number day-zero';
+            lessonNumber.textContent = 'Day 0';
+            lessonNumber.title = 'All classes meet';
+            
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.className = 'lesson-title-input';
+            titleInput.placeholder = 'Day Zero lesson title...';
+            titleInput.value = planData.title || '';
+            titleInput.addEventListener('input', () => {
+                saveLessonData(classId, cycle, '0', 'title', titleInput.value);
+            });
+            
+            header.appendChild(lessonNumber);
+            
+            // Add "All Classes Meet" badge with date
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'lesson-meta';
+            
+            const badge = document.createElement('span');
+            badge.className = 'period-badge';
+            badge.style.background = '#EF7D34';
+            badge.textContent = 'All Classes Meet';
+            metaDiv.appendChild(badge);
+            
+            // Try to find the date for Day Zero
+            if (classInfo.periods && classInfo.periods.length > 0) {
+                const firstPeriod = classInfo.periods[0];
+                const dateKey = `${classInfo.className}|${firstPeriod}|0|0`;
+                const dateStr = scheduleDates[dateKey];
+                
+                if (dateStr) {
+                    const dateBadge = document.createElement('span');
+                    dateBadge.className = 'period-badge';
+                    dateBadge.style.background = '#EF7D34';
+                    dateBadge.textContent = dateStr;
+                    metaDiv.appendChild(dateBadge);
+                }
+            }
+            
+            header.appendChild(metaDiv);
+            
+            header.appendChild(titleInput);
+            
+            // Notes textarea
+            const notesArea = document.createElement('textarea');
+            notesArea.className = 'lesson-notes';
+            notesArea.placeholder = 'Day Zero lesson notes...';
+            notesArea.value = planData.notes || '';
+            notesArea.addEventListener('input', () => {
+                saveLessonData(classId, cycle, '0', 'notes', notesArea.value);
+            });
+            
+            // Links section
+            const linksSection = document.createElement('div');
+            linksSection.className = 'links-section';
+            
+            const linksHeader = document.createElement('div');
+            linksHeader.className = 'links-header';
+            linksHeader.innerHTML = '<span>📎 Resources & Links</span>';
+            
+            const addLinkBtn = document.createElement('button');
+            addLinkBtn.className = 'add-link-btn';
+            addLinkBtn.textContent = '+ Add Link';
+            addLinkBtn.onclick = () => addLinkInput(classId, cycle, '0', linksSection);
+            
+            linksHeader.appendChild(addLinkBtn);
+            linksSection.appendChild(linksHeader);
+            
+            // Display existing links
+            const linksDisplay = document.createElement('div');
+            linksDisplay.className = 'links-display';
+            linksDisplay.id = `links-display-${classId}-${cycle}-0`;
+            
+            linksSection.appendChild(linksDisplay);
+            
+            card.appendChild(header);
+            card.appendChild(notesArea);
+            card.appendChild(linksSection);
+            
+            // Show existing links in the display AFTER card is built
+            if (planData.links && planData.links.length > 0) {
+                console.log(`Loading ${planData.links.length} links for Day Zero ${classId} cycle ${cycle}:`, planData.links);
+                setTimeout(() => {
+                    updateLinksDisplay(classId, cycle, '0', planData.links);
+                }, 0);
+            }
+            
+            return card;
+        }
+        
+        // Create a lesson card
+        function createLessonCard(classId, cycle, lesson, classInfo) {
+            const card = document.createElement('div');
+            card.className = 'lesson-card';
+            
+            const lessonKey = `${cycle}.${lesson}`;
+            
+            // Get existing plan data if any
+            const planData = lessonPlans[classId]?.cycles?.[cycle]?.[lesson] || {
+                title: '',
+                notes: '',
+                links: []
+            };
+            
+            // Lesson header
+            const header = document.createElement('div');
+            header.className = 'lesson-header';
+            
+            const lessonNumber = document.createElement('div');
+            lessonNumber.className = 'lesson-number';
+            lessonNumber.textContent = lessonKey;
+            
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.className = 'lesson-title-input';
+            titleInput.placeholder = 'Lesson title...';
+            titleInput.value = planData.title || '';
+            titleInput.addEventListener('input', () => {
+                saveLessonData(classId, cycle, lesson, 'title', titleInput.value);
+            });
+            
+            header.appendChild(lessonNumber);
+            
+            // Add period badges with dates if this is a regular class
+            if (classInfo.periods && classInfo.periods.length > 0) {
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'lesson-meta';
+                
+                classInfo.periods.forEach(period => {
+                    const badge = document.createElement('span');
+                    badge.className = 'period-badge';
+                    
+                    // Look up the date for this class/period/cycle/lesson
+                    const dateKey = `${classInfo.className}|${period}|${cycle}|${lesson}`;
+                    const dateStr = scheduleDates[dateKey];
+                    
+                    if (dateStr) {
+                        badge.textContent = `Period ${period} - ${dateStr}`;
+                    } else {
+                        badge.textContent = `Period ${period}`;
+                    }
+                    metaDiv.appendChild(badge);
+                });
+                
+                header.appendChild(metaDiv);
+            }
+            
+            // Add day badges if this is a special rule class
+            if (classInfo.days && classInfo.days.length > 0) {
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'lesson-meta';
+                
+                classInfo.days.forEach(day => {
+                    const badge = document.createElement('span');
+                    badge.className = 'period-badge';
+                    badge.textContent = day;
+                    metaDiv.appendChild(badge);
+                });
+                
+                header.appendChild(metaDiv);
+            }
+            
+            header.appendChild(titleInput);
+            
+            // Notes textarea
+            const notesArea = document.createElement('textarea');
+            notesArea.className = 'lesson-notes';
+            notesArea.placeholder = 'Lesson notes, activities, objectives...';
+            notesArea.value = planData.notes || '';
+            notesArea.addEventListener('input', () => {
+                saveLessonData(classId, cycle, lesson, 'notes', notesArea.value);
+            });
+            
+            // Links section
+            const linksSection = document.createElement('div');
+            linksSection.className = 'links-section';
+            
+            const linksHeader = document.createElement('div');
+            linksHeader.className = 'links-header';
+            linksHeader.innerHTML = '<span>📎 Resources & Links</span>';
+            
+            const addLinkBtn = document.createElement('button');
+            addLinkBtn.className = 'add-link-btn';
+            addLinkBtn.textContent = '+ Add Link';
+            addLinkBtn.onclick = () => addLinkInput(classId, cycle, lesson, linksSection);
+            
+            linksHeader.appendChild(addLinkBtn);
+            linksSection.appendChild(linksHeader);
+            
+            // Display existing links
+            const linksDisplay = document.createElement('div');
+            linksDisplay.className = 'links-display';
+            linksDisplay.id = `links-display-${classId}-${cycle}-${lesson}`;
+            
+            linksSection.appendChild(linksDisplay);
+            
+            card.appendChild(header);
+            card.appendChild(notesArea);
+            card.appendChild(linksSection);
+            
+            // Show existing links in the display AFTER card is built
+            if (planData.links && planData.links.length > 0) {
+                console.log(`Loading ${planData.links.length} links for ${classId} cycle ${cycle} lesson ${lesson}:`, planData.links);
+                // Use setTimeout to ensure DOM is ready
+                setTimeout(() => {
+                    updateLinksDisplay(classId, cycle, lesson, planData.links);
+                }, 0);
+            }
+            
+            return card;
+        }
+        
+        // Add link input fields
+        function addLinkInput(classId, cycle, lesson, container, existingLink = null) {
+            const linkItem = document.createElement('div');
+            linkItem.className = 'link-item';
+            
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.className = 'link-name-input';
+            nameInput.placeholder = 'Link name...';
+            
+            const urlInput = document.createElement('input');
+            urlInput.type = 'url';
+            urlInput.className = 'link-url-input';
+            urlInput.placeholder = 'https://...';
+            
+            const enterBtn = document.createElement('button');
+            enterBtn.className = 'add-link-btn';
+            enterBtn.textContent = 'Enter';
+            enterBtn.style.padding = '6px 12px';
+            enterBtn.style.fontSize = '12px';
+            
+            // Save link when Enter button is clicked
+            const saveAndClear = () => {
+                const name = nameInput.value.trim();
+                const url = urlInput.value.trim();
+                
+                if (url) {
+                    // Get current links
+                    const currentLinks = lessonPlans[classId]?.cycles?.[cycle]?.[lesson]?.links || [];
+                    
+                    // Add new link
+                    currentLinks.push({ name: name || url, url: url });
+                    
+                    // Save
+                    saveLessonData(classId, cycle, lesson, 'links', currentLinks);
+                    
+                    // Update display
+                    updateLinksDisplay(classId, cycle, lesson, currentLinks);
+                    
+                    // Clear inputs
+                    nameInput.value = '';
+                    urlInput.value = '';
+                    
+                    // Focus back on URL for next link
+                    urlInput.focus();
+                }
+            };
+            
+            enterBtn.onclick = saveAndClear;
+            
+            // Also allow Enter key in either field
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveAndClear();
+                }
+            });
+            
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveAndClear();
+                }
+            });
+            
+            linkItem.appendChild(nameInput);
+            linkItem.appendChild(urlInput);
+            linkItem.appendChild(enterBtn);
+            
+            // Insert before the display div
+            const display = container.querySelector('.links-display');
+            container.insertBefore(linkItem, display);
+        }
+        
+        // Get all links from a container (no longer needed but keeping for compatibility)
+        function getAllLinks(container) {
+            const links = [];
+            const linkItems = container.querySelectorAll('.link-item');
+            
+            linkItems.forEach(item => {
+                const name = item.querySelector('.link-name-input').value.trim();
+                const url = item.querySelector('.link-url-input').value.trim();
+                if (url) {
+                    links.push({ name: name || url, url });
+                }
+            });
+            
+            return links;
+        }
+        
+        // Save lesson data
+        function saveLessonData(classId, cycle, lesson, field, value) {
+            if (!lessonPlans[classId]) {
+                lessonPlans[classId] = { cycles: {} };
+            }
+            if (!lessonPlans[classId].cycles[cycle]) {
+                lessonPlans[classId].cycles[cycle] = {};
+            }
+            if (!lessonPlans[classId].cycles[cycle][lesson]) {
+                lessonPlans[classId].cycles[cycle][lesson] = { title: '', notes: '', links: [] };
+            }
+            
+            lessonPlans[classId].cycles[cycle][lesson][field] = value;
+            triggerAutoSave();
+        }
+        
+        // Save lesson links (kept for compatibility but simplified)
+        function saveLessonLinks(classId, cycle, lesson, container) {
+            // This is now mostly handled in addLinkInput, but keeping for remove functionality
+            const currentLinks = lessonPlans[classId]?.cycles?.[cycle]?.[lesson]?.links || [];
+            updateLinksDisplay(classId, cycle, lesson, currentLinks);
+        }
+        
+        // Update links display
+        function updateLinksDisplay(classId, cycle, lesson, links) {
+            const display = document.getElementById(`links-display-${classId}-${cycle}-${lesson}`);
+            if (!display) return;
+            
+            display.innerHTML = '';
+            
+            links.forEach((link, index) => {
+                if (link.url) {
+                    const item = document.createElement('div');
+                    item.className = 'link-display-item';
+                    item.style.display = 'flex';
+                    item.style.justifyContent = 'space-between';
+                    item.style.alignItems = 'center';
+                    
+                    const anchor = document.createElement('a');
+                    anchor.href = link.url;
+                    anchor.target = '_blank';
+                    anchor.textContent = link.name || link.url;
+                    
+                    const removeDisplayBtn = document.createElement('button');
+                    removeDisplayBtn.textContent = '✕';
+                    removeDisplayBtn.className = 'remove-link-btn';
+                    removeDisplayBtn.style.marginLeft = '10px';
+                    removeDisplayBtn.onclick = () => {
+                        // Remove this link from the saved data
+                        const updatedLinks = links.filter((_, i) => i !== index);
+                        saveLessonData(classId, cycle, lesson, 'links', updatedLinks);
+                        updateLinksDisplay(classId, cycle, lesson, updatedLinks);
+                    };
+                    
+                    item.appendChild(anchor);
+                    item.appendChild(removeDisplayBtn);
+                    display.appendChild(item);
+                }
+            });
+        }
+        
+        // Auto-save functionality
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                saveToLocalStorage();
+                updateSaveIndicator('Auto-saved');
+            }, 1000);
+        }
+        
+        // Save to localStorage
+        function saveToLocalStorage() {
+            const data = {
+                scheduleData: scheduleData,
+                scheduleDates: scheduleDates,
+                lessonPlans: lessonPlans,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('webbLessonPlans', JSON.stringify(data));
+        }
+        
+        // Load from localStorage
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('webbLessonPlans');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    scheduleData = data.scheduleData;
+                    scheduleDates = data.scheduleDates || {};
+                    lessonPlans = data.lessonPlans;
+                    if (scheduleData) {
+                        initializePlanner();
+                    }
+                } catch (error) {
+                    console.error('Error loading saved data:', error);
+                }
+            }
+        }
+        
+        // Clear all data
+        function clearAll() {
+            if (!confirm('Are you sure you want to clear all data? This will remove your schedule, dates, and lesson plans. Make sure to export your lesson plans first if you want to save them!')) {
+                return;
+            }
+            
+            scheduleData = null;
+            scheduleDates = {};
+            lessonPlans = {};
+            currentClass = null;
+            
+            // Clear localStorage
+            localStorage.removeItem('webbLessonPlans');
+            
+            // Reset UI
+            document.getElementById('tabsContainer').innerHTML = '';
+            document.getElementById('mainContent').innerHTML = `
+                <div class="empty-state">
+                    <h2>Welcome to Webb Lesson Planner!</h2>
+                    <p>Import your schedule data from the Webb Schedule Builder to get started.</p>
+                    <p style="margin-top: 10px;">Click "Import Schedule (JSON)" above and select your schedule JSON file.</p>
+                </div>
+            `;
+            
+            updateSaveIndicator('All data cleared');
+        }
+        
+        // Save plans to file
+        function savePlans() {
+            const data = {
+                scheduleData: scheduleData,
+                scheduleDates: scheduleDates,
+                lessonPlans: lessonPlans,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.download = `${dateStr}_webb_lesson_plans.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateSaveIndicator('Plans saved!');
+        }
+        
+        // Load plans from file
+        function loadPlans() {
+            document.getElementById('plansInput').click();
+        }
+        
+        document.getElementById('plansInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    scheduleData = data.scheduleData;
+                    scheduleDates = data.scheduleDates || {};
+                    lessonPlans = data.lessonPlans;
+                    initializePlanner();
+                    updateSaveIndicator('Plans loaded!');
+                } catch (error) {
+                    alert('Error reading plans file.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+        
+        // Export plans to CSV
+        function exportPlans() {
+            if (!scheduleData || !currentClass) {
+                alert('Please import a schedule and select a class first.');
+                return;
+            }
+            
+            const classInfo = lessonPlans[currentClass];
+            const className = classInfo.className.replace(/\s+/g, '_');
+            const numCycles = parseInt(scheduleData.numCycles) || 8;
+            
+            // Build CSV
+            let csv = 'Class,Cycle,Lesson,Title,Notes,Links\n';
+            
+            for (let cycle = 1; cycle <= numCycles; cycle++) {
+                // Check for Day Zero
+                if (cycle === 2 && !classInfo.isSpecialRule) {
+                    const dayZero = lessonPlans[currentClass]?.cycles?.[cycle]?.['0'];
+                    if (dayZero) {
+                        const links = dayZero.links ? dayZero.links.map(l => `${l.name}: ${l.url}`).join(' | ') : '';
+                        csv += `"${classInfo.className}",${cycle},"0.0","${escapeCSV(dayZero.title || '')}","${escapeCSV(dayZero.notes || '')}","${escapeCSV(links)}"\n`;
+                    }
+                }
+                
+                // Regular lessons
+                for (let lesson = 1; lesson <= 4; lesson++) {
+                    const lessonData = lessonPlans[currentClass]?.cycles?.[cycle]?.[lesson];
+                    if (lessonData) {
+                        const links = lessonData.links ? lessonData.links.map(l => `${l.name}: ${l.url}`).join(' | ') : '';
+                        csv += `"${classInfo.className}",${cycle},"${cycle}.${lesson}","${escapeCSV(lessonData.title || '')}","${escapeCSV(lessonData.notes || '')}","${escapeCSV(links)}"\n`;
+                    }
+                }
+            }
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.download = `${dateStr}_${className}_lesson_plans.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateSaveIndicator('Exported to CSV!');
+        }
+        
+        function escapeCSV(str) {
+            if (!str) return '';
+            return str.replace(/"/g, '""');
+        }
+        
+        // Print plans with cycle selection
+        function printPlans() {
+            if (!scheduleData || !currentClass) {
+                alert('Please import a schedule and select a class first.');
+                return;
+            }
+            
+            const numCycles = parseInt(scheduleData.numCycles) || 8;
+            
+            // Create modal for cycle selection
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                max-width: 500px;
+                width: 90%;
+            `;
+            
+            dialog.innerHTML = `
+                <h2 style="margin-bottom: 20px; color: #1B5E3F;">Select Cycles to Print</h2>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" id="printAll" onchange="toggleAllCycles(this)">
+                        <strong> Select All Cycles</strong>
+                    </label>
+                    <div id="cycleCheckboxes" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+                        ${Array.from({length: numCycles}, (_, i) => `
+                            <label>
+                                <input type="checkbox" class="cycle-checkbox" value="${i + 1}">
+                                Cycle ${i + 1}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button onclick="this.closest('.modal-container').remove()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">Cancel</button>
+                    <button onclick="executePrint()" style="padding: 10px 20px; background: #1B5E3F; color: white; border: none; border-radius: 6px; cursor: pointer;">Print</button>
+                </div>
+            `;
+            
+            modal.className = 'modal-container';
+            modal.appendChild(dialog);
+            document.body.appendChild(modal);
+            
+            // Add helper function to window
+            window.toggleAllCycles = function(checkbox) {
+                const checkboxes = document.querySelectorAll('.cycle-checkbox');
+                checkboxes.forEach(cb => cb.checked = checkbox.checked);
+            };
+            
+            window.executePrint = function() {
+                const selectedCycles = Array.from(document.querySelectorAll('.cycle-checkbox:checked'))
+                    .map(cb => parseInt(cb.value));
+                
+                if (selectedCycles.length === 0) {
+                    alert('Please select at least one cycle to print.');
+                    return;
+                }
+                
+                modal.remove();
+                generatePrintView(selectedCycles);
+            };
+        }
+        
+        function generatePrintView(cycles) {
+            const classInfo = lessonPlans[currentClass];
+            const printWindow = window.open('', '_blank');
+            
+            let html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${classInfo.className} - Lesson Plans</title>
+                    <style>
+                        @media print {
+                            @page { margin: 0.5in; }
+                            .page-break { page-break-before: always; }
+                        }
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            max-width: 8.5in;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }
+                        h1 {
+                            color: #1B5E3F;
+                            border-bottom: 3px solid #8DC63F;
+                            padding-bottom: 10px;
+                            margin-bottom: 30px;
+                        }
+                        h2 {
+                            color: #2B7A78;
+                            margin-top: 30px;
+                            margin-bottom: 15px;
+                        }
+                        .lesson {
+                            margin-bottom: 25px;
+                            padding: 15px;
+                            border: 2px solid #C9C49D;
+                            border-radius: 8px;
+                            background: #F0F8F5;
+                        }
+                        .lesson-header {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            margin-bottom: 10px;
+                            flex-wrap: wrap;
+                        }
+                        .lesson-number {
+                            background: #8DC63F;
+                            color: white;
+                            padding: 5px 12px;
+                            border-radius: 4px;
+                            font-weight: bold;
+                            font-size: 14px;
+                        }
+                        .lesson-number.day-zero {
+                            background: #EF7D34;
+                        }
+                        .lesson-title {
+                            font-weight: bold;
+                            font-size: 16px;
+                            color: #1B5E3F;
+                        }
+                        .period-badge {
+                            background: #2B7A78;
+                            color: white;
+                            padding: 3px 8px;
+                            border-radius: 3px;
+                            font-size: 12px;
+                        }
+                        .lesson-notes {
+                            margin: 10px 0;
+                            white-space: pre-wrap;
+                        }
+                        .lesson-links {
+                            margin-top: 10px;
+                        }
+                        .lesson-links a {
+                            color: #1B5E3F;
+                            text-decoration: none;
+                            display: block;
+                            margin: 5px 0;
+                        }
+                        .lesson-links a:hover {
+                            text-decoration: underline;
+                        }
+                        .print-date {
+                            text-align: right;
+                            color: #666;
+                            font-size: 12px;
+                            margin-bottom: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>${classInfo.className} - Lesson Plans</h1>
+                    <div class="print-date">Printed: ${new Date().toLocaleDateString()}</div>
+            `;
+            
+            cycles.forEach((cycle, index) => {
+                if (index > 0) html += '<div class="page-break"></div>';
+                
+                html += `<h2>Cycle ${cycle}</h2>`;
+                
+                // Add Day Zero if it's cycle 2
+                if (cycle === 2 && !classInfo.isSpecialRule) {
+                    const dayZero = lessonPlans[currentClass]?.cycles?.[cycle]?.['0'];
+                    if (dayZero && (dayZero.title || dayZero.notes || dayZero.links?.length > 0)) {
+                        // Generate period badges with dates for Day Zero
+                        let dayZeroBadges = '<span class="period-badge">All Classes Meet</span>';
+                        if (classInfo.periods && classInfo.periods.length > 0) {
+                            const firstPeriod = classInfo.periods[0];
+                            const dateKey = `${classInfo.className}|${firstPeriod}|0|0`;
+                            const dateStr = scheduleDates[dateKey];
+                            if (dateStr) {
+                                dayZeroBadges += ` <span class="period-badge">${dateStr}</span>`;
+                            }
+                        }
+                        
+                        html += `
+                            <div class="lesson">
+                                <div class="lesson-header">
+                                    <span class="lesson-number day-zero">Day 0</span>
+                                    ${dayZeroBadges}
+                                    ${dayZero.title ? `<span class="lesson-title">${dayZero.title}</span>` : ''}
+                                </div>
+                                ${dayZero.notes ? `<div class="lesson-notes">${dayZero.notes}</div>` : ''}
+                                ${dayZero.links && dayZero.links.length > 0 ? `
+                                    <div class="lesson-links">
+                                        <strong>Resources:</strong>
+                                        ${dayZero.links.map(link => `<a href="${link.url}" target="_blank">${link.name || link.url}</a>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Add regular lessons
+                for (let lesson = 1; lesson <= 4; lesson++) {
+                    const lessonData = lessonPlans[currentClass]?.cycles?.[cycle]?.[lesson];
+                    if (lessonData && (lessonData.title || lessonData.notes || lessonData.links?.length > 0)) {
+                        // Generate period badges with dates
+                        let periodBadges = '';
+                        if (classInfo.periods) {
+                            periodBadges = classInfo.periods.map(p => {
+                                const dateKey = `${classInfo.className}|${p}|${cycle}|${lesson}`;
+                                const dateStr = scheduleDates[dateKey];
+                                return dateStr ? 
+                                    `<span class="period-badge">Period ${p} - ${dateStr}</span>` : 
+                                    `<span class="period-badge">Period ${p}</span>`;
+                            }).join('');
+                        } else if (classInfo.days) {
+                            periodBadges = classInfo.days.map(d => `<span class="period-badge">${d}</span>`).join('');
+                        }
+                        
+                        html += `
+                            <div class="lesson">
+                                <div class="lesson-header">
+                                    <span class="lesson-number">${cycle}.${lesson}</span>
+                                    ${periodBadges}
+                                    ${lessonData.title ? `<span class="lesson-title">${lessonData.title}</span>` : ''}
+                                </div>
+                                ${lessonData.notes ? `<div class="lesson-notes">${lessonData.notes}</div>` : ''}
+                                ${lessonData.links && lessonData.links.length > 0 ? `
+                                    <div class="lesson-links">
+                                        <strong>Resources:</strong>
+                                        ${lessonData.links.map(link => `<a href="${link.url}" target="_blank">${link.name || link.url}</a>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            html += `
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(html);
+            printWindow.document.close();
+            
+            // Wait for content to load, then print
+            printWindow.onload = function() {
+                setTimeout(() => {
+                    printWindow.print();
+                }, 250);
+            };
+        }
+        
+        // Update save indicator
+        function updateSaveIndicator(message) {
+            const indicator = document.getElementById('saveIndicator');
+            const status = document.getElementById('saveStatus');
+            
+            indicator.classList.add('saved');
+            status.textContent = message;
+            
+            setTimeout(() => {
+                status.textContent = 'Ready';
+                indicator.classList.remove('saved');
+            }, 2000);
+        }
+        
+        // Load saved data on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+        });
+        
+        // Save before unload
+        window.addEventListener('beforeunload', function() {
+            saveToLocalStorage();
+        });
+    </script>
+</body>
+</html>

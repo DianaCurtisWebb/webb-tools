@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webb Semester Overview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E3F 0%, #8DC63F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .upload-section {
+            text-align: center;
+            padding: 40px;
+            background: #F0F8F5;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .upload-btn {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .upload-btn:hover {
+            background: #2B7A78;
+        }
+        
+        .overview-display {
+            display: none;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .header, .upload-section, .upload-btn {
+                display: none !important;
+            }
+            
+            .overview-display {
+                display: block !important;
+            }
+            
+            @page {
+                margin: 0.3in;
+                size: landscape;
+            }
+        }
+        
+        /* Overview Grid */
+        .overview-title {
+            text-align: center;
+            color: #1B5E3F;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #8DC63F;
+        }
+        
+        .cycles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media print {
+            .cycles-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            
+            .overview-title {
+                font-size: 22px;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+            }
+        }
+        
+        .cycle-box {
+            border: 3px solid #1B5E3F;
+            border-radius: 8px;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+        
+        .cycle-header {
+            background: #1B5E3F;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .cycle-content {
+            padding: 12px;
+            background: white;
+            min-height: 150px;
+        }
+        
+        @media print {
+            .cycle-content {
+                padding: 8px;
+                min-height: 120px;
+            }
+            
+            .cycle-header {
+                padding: 8px;
+                font-size: 16px;
+            }
+            
+            .lesson-line {
+                padding: 4px 0;
+                font-size: 12px;
+            }
+            
+            .day-zero-line {
+                padding: 6px;
+                font-size: 12px;
+            }
+        }
+        
+        .lesson-line {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .lesson-line:last-child {
+            border-bottom: none;
+        }
+        
+        .lesson-num {
+            font-weight: 600;
+            color: #2B7A78;
+            display: inline-block;
+            min-width: 35px;
+        }
+        
+        .lesson-title {
+            color: #333;
+        }
+        
+        .lesson-title.empty {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .day-zero-line {
+            background: #FFF5F0;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            border-left: 4px solid #EF7D34;
+            font-size: 14px;
+        }
+        
+        /* Exam Entry Section */
+        .exam-entry-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #F0F8F5;
+            border-radius: 12px;
+        }
+        
+        .exam-entry-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1B5E3F;
+            margin-bottom: 15px;
+        }
+        
+        .exam-entry-row {
+            display: grid;
+            grid-template-columns: 120px 150px 200px 150px auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .exam-entry-label {
+            font-weight: 600;
+            color: #1B5E3F;
+        }
+        
+        .exam-entry-input, .exam-entry-select {
+            padding: 8px;
+            border: 2px solid #C9C49D;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .exam-entry-select {
+            background: white;
+        }
+        
+        .add-exam-btn {
+            background: #8DC63F;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .add-exam-btn:hover {
+            background: #7AB62F;
+        }
+        
+        .remove-exam-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Exam boxes in grid */
+        .exam-box {
+            background: #FFF9E6;
+            border: 3px dashed #EF7D34;
+        }
+        
+        .exam-box .cycle-header {
+            background: #EF7D34;
+        }
+        
+        .exam-info {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .exam-info strong {
+            color: #EF7D34;
+        }
+        
+        @media print {
+            .exam-entry-section {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button onclick="clearAll()" style="position: absolute; top: 20px; left: 20px; padding: 10px 20px; background: #8DC63F; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">🗑️ Clear Info</button>
+            <h1>📊 Webb Semester Overview</h1>
+            <p>Import lesson plans CSV to generate a printable grid</p>
+        </div>
+        
+        <div class="content">
+            <div class="upload-section">
+                <h2>Upload Lesson Plans CSV</h2>
+                <p style="margin: 15px 0; color: #666;">Export CSV from Webb Lesson Planner, then upload here</p>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    📂 Choose CSV File
+                </button>
+                <input type="file" id="fileInput" accept=".csv">
+                <div style="margin-top: 20px;">
+                    <input type="text" id="semesterTitle" placeholder="Semester (e.g., Fall 2026)" 
+                           style="padding: 10px; border: 2px solid #C9C49D; border-radius: 6px; width: 300px; font-size: 14px;">
+                </div>
+            </div>
+            
+            <div class="overview-display" id="overviewDisplay">
+                <button class="upload-btn" onclick="window.print()" style="margin-bottom: 20px;">
+                    🖨️ Print / Save as PDF
+                </button>
+                <button class="upload-btn" onclick="exportToCSV()" style="margin-bottom: 20px; background: #8DC63F;">
+                    📥 Export as CSV
+                </button>
+                <div id="overviewContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const csvText = event.target.result;
+                parseCSV(csvText);
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+        
+        function parseCSV(csvText) {
+            originalCSVData = csvText; // Store for export later
+            const lines = csvText.trim().split('\n');
+            
+            // Get class name from first data row
+            const firstDataRow = lines[1].split(',');
+            className = firstDataRow[0].replace(/"/g, '').trim();
+            
+            // Parse all lessons
+            const cycles = {};
+            
+            for (let i = 1; i < lines.length; i++) {
+                const parts = lines[i].split(',');
+                const cycle = parts[1].trim();
+                const lesson = parts[2].replace(/"/g, '').trim();
+                const title = parts[3].replace(/"/g, '').trim();
+                
+                if (!cycles[cycle]) {
+                    cycles[cycle] = [];
+                }
+                
+                cycles[cycle].push({ lesson, title });
+            }
+            
+            // Build HTML
+            const semesterTitle = document.getElementById('semesterTitle')?.value || '';
+            const titleText = semesterTitle ? `${className} - ${semesterTitle}` : `${className} - Semester Overview`;
+            
+            let html = `<div class="overview-title">${titleText}</div>`;
+            html += '<div class="cycles-grid">';
+            
+            // Sort cycle numbers
+            const cycleNumbers = Object.keys(cycles).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            cycleNumbers.forEach(cycleNum => {
+                const lessons = cycles[cycleNum];
+                
+                html += `<div class="cycle-box">`;
+                html += `<div class="cycle-header">CYCLE ${cycleNum}</div>`;
+                html += `<div class="cycle-content">`;
+                
+                lessons.forEach(item => {
+                    const displayTitle = item.title || '(No title)';
+                    const isEmpty = !item.title;
+                    
+                    if (item.lesson === '0.0') {
+                        html += `<div class="day-zero-line"><strong>0.0:</strong> ${displayTitle}</div>`;
+                    } else {
+                        html += `<div class="lesson-line">`;
+                        html += `<span class="lesson-num">${item.lesson}:</span>`;
+                        html += `<span class="lesson-title ${isEmpty ? 'empty' : ''}">${displayTitle}</span>`;
+                        html += `</div>`;
+                    }
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            html += '</div>';
+            
+            document.getElementById('overviewContent').innerHTML = html;
+            
+            // Add exam entry section after the grid
+            const examSection = document.createElement('div');
+            examSection.className = 'exam-entry-section';
+            examSection.innerHTML = `
+                <div class="exam-entry-title">📝 Add Exam Schedule (will appear in empty cycle boxes)</div>
+                <div id="examEntries"></div>
+                <button class="add-exam-btn" onclick="addExamEntry()">+ Add Exam</button>
+            `;
+            document.getElementById('overviewContent').appendChild(examSection);
+            
+            // Initialize with one exam entry
+            addExamEntry();
+            
+            document.getElementById('overviewDisplay').style.display = 'block';
+            document.getElementById('overviewDisplay').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        let examCount = 0;
+        const exams = [];
+        let originalCSVData = '';
+        let className = '';
+        
+        function clearAll() {
+            if (confirm('Clear all data and start over?')) {
+                originalCSVData = '';
+                className = '';
+                examCount = 0;
+                exams.length = 0;
+                document.getElementById('overviewDisplay').style.display = 'none';
+                document.getElementById('overviewContent').innerHTML = '';
+                document.getElementById('semesterTitle').value = '';
+                document.getElementById('fileInput').value = '';
+            }
+        }
+        
+        function exportToCSV() {
+            if (!originalCSVData) {
+                alert('No CSV data to export. Please upload a CSV first.');
+                return;
+            }
+            
+            const blob = new Blob([originalCSVData], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().split('T')[0];
+            const cleanClassName = className.replace(/\s+/g, '_');
+            a.download = `${dateStr}_${cleanClassName}_semester_overview.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function addExamEntry() {
+            examCount++;
+            const container = document.getElementById('examEntries');
+            
+            const row = document.createElement('div');
+            row.className = 'exam-entry-row';
+            row.id = `exam-row-${examCount}`;
+            
+            row.innerHTML = `
+                <div class="exam-entry-label">Exam ${examCount}:</div>
+                <select class="exam-entry-select" id="exam-${examCount}-period" onchange="updateExamDisplay()">
+                    <option value="">Select Period</option>
+                    <option value="A">Period A</option>
+                    <option value="B">Period B</option>
+                    <option value="C">Period C</option>
+                    <option value="D">Period D</option>
+                    <option value="E">Period E</option>
+                    <option value="F">Period F</option>
+                    <option value="G">Period G</option>
+                </select>
+                <input type="text" class="exam-entry-input" id="exam-${examCount}-date" placeholder="Date (e.g., Dec 14, 2026)" onchange="updateExamDisplay()">
+                <input type="text" class="exam-entry-input" id="exam-${examCount}-time" placeholder="Time (e.g., 9:00 AM)" onchange="updateExamDisplay()">
+                <button class="remove-exam-btn" onclick="removeExamEntry(${examCount})">✕ Remove</button>
+            `;
+            
+            container.appendChild(row);
+            exams.push(examCount);
+        }
+        
+        function removeExamEntry(id) {
+            const row = document.getElementById(`exam-row-${id}`);
+            row.remove();
+            const index = exams.indexOf(id);
+            if (index > -1) {
+                exams.splice(index, 1);
+            }
+            updateExamDisplay();
+        }
+        
+        function updateExamDisplay() {
+            // Collect all exam data
+            const examData = [];
+            exams.forEach(id => {
+                const period = document.getElementById(`exam-${id}-period`)?.value;
+                const date = document.getElementById(`exam-${id}-date`)?.value;
+                const time = document.getElementById(`exam-${id}-time`)?.value;
+                
+                if (period && (date || time)) {
+                    examData.push({ period, date, time });
+                }
+            });
+            
+            // Remove existing exam box
+            const existingExamBox = document.querySelector('.exam-box');
+            if (existingExamBox) {
+                existingExamBox.remove();
+            }
+            
+            // Only create exam box if there's at least one exam
+            if (examData.length === 0) return;
+            
+            // Add ONE exam box with all exams listed
+            const grid = document.querySelector('.cycles-grid');
+            const examBox = document.createElement('div');
+            examBox.className = 'cycle-box exam-box';
+            
+            let examListHTML = '';
+            examData.forEach((exam, index) => {
+                const dateTime = [exam.date, exam.time].filter(x => x).join(' @ ') || 'TBD';
+                examListHTML += `
+                    <div class="exam-info" style="margin-bottom: ${index < examData.length - 1 ? '8px' : '0'}; padding-bottom: ${index < examData.length - 1 ? '8px' : '0'}; border-bottom: ${index < examData.length - 1 ? '1px solid #EF7D34' : 'none'};">
+                        <strong style="color: #EF7D34;">Period ${exam.period}:</strong> ${dateTime}
+                    </div>
+                `;
+            });
+            
+            examBox.innerHTML = `
+                <div class="cycle-header">EXAMS</div>
+                <div class="cycle-content">
+                    ${examListHTML}
+                </div>
+            `;
+            
+            grid.appendChild(examBox);
+        }
+    </script>
+</body>
+</html>
