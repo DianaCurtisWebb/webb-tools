@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-Up Work Calculator - Webb School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f3460;
+            --navy-light: #16537e;
+            --gold: #c19a6b;
+            --gold-light: #d4af7a;
+            --cream: #faf7f2;
+            --white: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --border: #dfe6ed;
+            --success: #16a34a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .calculator {
+            max-width: 600px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 30px rgba(15, 52, 96, 0.08);
+            padding: 2.5rem;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            transition: all 0.2s;
+            background: var(--white);
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-calculate {
+            background: var(--navy);
+            color: white;
+        }
+
+        .btn-calculate:hover {
+            background: var(--navy-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 52, 96, 0.3);
+        }
+
+        .btn-generate {
+            background: var(--gold);
+            color: white;
+            display: none;
+        }
+
+        .btn-generate:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193, 154, 107, 0.3);
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.05) 0%, rgba(193, 154, 107, 0.05) 100%);
+            border-radius: 10px;
+            border-left: 4px solid var(--navy);
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .result-value {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--navy);
+        }
+
+        .message-box {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .message-box.show {
+            display: block;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .message-header h3 {
+            font-family: 'Crimson Pro', serif;
+            color: var(--navy);
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            padding: 0.5rem 1rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #15803d;
+        }
+
+        .message-text {
+            font-family: 'Work Sans', sans-serif;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre-line;
+            background: var(--cream);
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        .policy-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .copy-notification.show {
+            display: block;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .calculator {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Make-Up Work Calculator</h1>
+        <p class="subtitle">Webb School Policy: Days Missed + 1</p>
+
+        <form id="makeupForm" onsubmit="calculateDeadline(event)">
+            <div class="form-group">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName" required placeholder="e.g., Alex Smith">
+            </div>
+
+            <div class="form-group">
+                <label for="assignmentName">Assignment Name:</label>
+                <input type="text" id="assignmentName" required placeholder="e.g., Essay on The Great Gatsby">
+            </div>
+
+            <div class="form-group">
+                <label for="originalDueDate">Original Due Date:</label>
+                <input type="date" id="originalDueDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="returnDate">Return Date (First Day Back):</label>
+                <input type="date" id="returnDate" required>
+            </div>
+
+            <button type="submit" class="btn-calculate" onclick="calculateDeadline(event)">Calculate Deadline</button>
+        </form>
+
+        <div class="results" id="results">
+            <div class="result-item">
+                <span class="result-label">Original Due Date:</span>
+                <span class="result-value" id="displayOriginalDate">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Days Missed:</span>
+                <span class="result-value" id="displayDaysMissed">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Extension Days:</span>
+                <span class="result-value" id="displayExtension">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">New Deadline:</span>
+                <span class="result-value" id="displayNewDeadline" style="color: var(--gold);">-</span>
+            </div>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="generateMessage()">Generate Student Message</button>
+
+        <div class="message-box" id="messageBox">
+            <div class="message-header">
+                <h3>Student Message</h3>
+                <button class="copy-btn" onclick="copyMessage()">Copy Message</button>
+            </div>
+            <div class="message-text" id="messageText"></div>
+        </div>
+
+        <div class="policy-note">
+            <strong>📋 Webb Policy:</strong> Students receive the number of days missed plus one additional day to complete make-up work. Weekends are not counted.
+        </div>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        ✓ Message copied to clipboard!
+    </div>
+
+    <script>
+        let calculatedData = {};
+
+        function calculateDeadline(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById('studentName').value;
+            const assignmentName = document.getElementById('assignmentName').value;
+            const originalDueDateInput = document.getElementById('originalDueDate').value;
+            const returnDateInput = document.getElementById('returnDate').value;
+
+            // Parse dates correctly by adding time to avoid timezone issues
+            const originalDueDate = new Date(originalDueDateInput + 'T12:00:00');
+            const returnDate = new Date(returnDateInput + 'T12:00:00');
+
+            // Validate return date is after original due date
+            if (returnDate <= originalDueDate) {
+                alert('Return date must be after the original due date');
+                return;
+            }
+
+            // Helper function to check if a date is a school day (weekday)
+            function isSchoolDay(date) {
+                return date.getDay() !== 0 && date.getDay() !== 6;
+            }
+
+            // Calculate days missed (school days only from original due date up to but NOT including return date)
+            let daysMissed = 0;
+            let currentDate = new Date(originalDueDate);
+            
+            while (currentDate < returnDate) {
+                if (isSchoolDay(currentDate)) {
+                    daysMissed++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Calculate extension days (days missed + 1)
+            const extensionDays = daysMissed + 1;
+
+            // Calculate new deadline starting from return date (return date is day 1)
+            let newDeadline = new Date(returnDate);
+            let daysAdded = 0;
+            
+            // Check if return date is a school day
+            if (isSchoolDay(newDeadline)) {
+                daysAdded = 1; // Return date counts as day 1 if it's a school day
+            }
+
+            while (daysAdded < extensionDays) {
+                newDeadline.setDate(newDeadline.getDate() + 1);
+                // Only count school days
+                if (isSchoolDay(newDeadline)) {
+                    daysAdded++;
+                }
+            }
+
+            // Store data for message generation
+            calculatedData = {
+                studentName,
+                assignmentName,
+                originalDueDate,
+                returnDate,
+                daysMissed,
+                extensionDays,
+                newDeadline
+            };
+
+            // Display results
+            document.getElementById('displayOriginalDate').textContent = formatDate(originalDueDate);
+            document.getElementById('displayDaysMissed').textContent = daysMissed + (daysMissed === 1 ? ' day' : ' days');
+            document.getElementById('displayExtension').textContent = extensionDays + (extensionDays === 1 ? ' day' : ' days');
+            document.getElementById('displayNewDeadline').textContent = formatDate(newDeadline);
+
+            document.getElementById('results').classList.add('show');
+            document.getElementById('generateBtn').style.display = 'block';
+            document.getElementById('messageBox').classList.remove('show');
+        }
+
+        function generateMessage() {
+            const { studentName, assignmentName, originalDueDate, returnDate, newDeadline } = calculatedData;
+
+            const message = `Hello ${studentName}!
+
+While you were out, we completed ${assignmentName}. Your revised due date is ${formatDate(newDeadline)}.
+
+Assignment Date: ${formatDate(originalDueDate)}
+Return Date: ${formatDate(returnDate)}
+New Due Date: ${formatDate(newDeadline)}
+
+Per Webb School policy, you have the number of days you missed plus one additional day to complete make-up work (weekends excluded). Please see me to schedule the make-up within this timeframe. Assignments not completed by the new date will receive late penalties.`;
+
+            document.getElementById('messageText').textContent = message;
+            document.getElementById('messageBox').classList.add('show');
+        }
+
+        function copyMessage() {
+            const messageText = document.getElementById('messageText').textContent;
+            navigator.clipboard.writeText(messageText).then(() => {
+                const notification = document.getElementById('copyNotification');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }).catch(err => {
+                // Fallback for browsers that don't support clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = messageText;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const notification = document.getElementById('copyNotification');
+                    notification.classList.add('show');
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+                } catch (err) {
+                    alert('Please manually copy the message');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function formatDate(date) {
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Allow Enter key to submit form
+        document.getElementById('makeupForm').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                calculateDeadline(event);
+            }
+        });
+    </script>
+</body>
+</html>
