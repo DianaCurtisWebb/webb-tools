@@ -312,6 +312,12 @@
             border-radius: 6px;
             padding: 6px 10px;
             display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .lesson-main {
+            display: flex;
             gap: 8px;
             align-items: center;
         }
@@ -334,6 +340,13 @@
         .lesson-class {
             color: #3D4241;
             font-size: 14px;
+        }
+        
+        .lesson-time {
+            color: #666;
+            font-size: 11px;
+            font-style: italic;
+            margin-left: 20px;
         }
         
         .special-rule-indicator {
@@ -588,14 +601,14 @@
             </div>
             
             <div class="rotation-schedule-display">
-                <h4>7-Day Rotation Pattern</h4>
-                <div class="rotation-day-item"><strong>Day 1:</strong> Periods A, B, C, D</div>
-                <div class="rotation-day-item"><strong>Day 2:</strong> Periods E, G, A, F</div>
-                <div class="rotation-day-item"><strong>Day 3:</strong> Periods B, D, E, C</div>
-                <div class="rotation-day-item"><strong>Day 4:</strong> Periods F, A, D, G</div>
-                <div class="rotation-day-item"><strong>Day 5:</strong> Periods E, F, B, C</div>
-                <div class="rotation-day-item"><strong>Day 6:</strong> Periods A, B, G, D</div>
-                <div class="rotation-day-item"><strong>Day 7:</strong> Periods G, C, E, F</div>
+                <h4>7-Day Rotation Pattern with Block Times</h4>
+                <div class="rotation-day-item"><strong>Day 1:</strong> A (Block 1: 8:45-9:50), B (Block 2: 10:20-11:25), C (Block 3: 1:05-2:10), D (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 2:</strong> E (Block 1: 8:45-9:50), G (Block 2: 10:20-11:25), A (Block 3: 1:05-2:10), F (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 3:</strong> B (Block 1: 8:45-9:50), D (Block 2: 10:20-11:25), E (Block 3: 1:05-2:10), C (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 4:</strong> F (Block 1: 8:45-9:50), A (Block 2: 10:20-11:25), D (Block 3: 1:05-2:10), G (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 5:</strong> E (Block 1: 8:45-9:50), F (Block 2: 10:20-11:25), B (Block 3: 1:05-2:10), C (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 6:</strong> A (Block 1: 8:45-9:50), B (Block 2: 10:20-11:25), G (Block 3: 1:05-2:10), D (Block 4: 2:40-3:45)</div>
+                <div class="rotation-day-item"><strong>Day 7:</strong> G (Block 1: 8:45-9:50), C (Block 2: 10:20-11:25), E (Block 3: 1:05-2:10), F (Block 4: 2:40-3:45)</div>
             </div>
             
             <div id="scheduleOutput" class="schedule-output"></div>
@@ -612,6 +625,16 @@
         // ║   Change dates below to match your school calendar.                       ║
         // ║                                                                            ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
+        
+        // ────────────────────────────────────────────────────────────────────────────
+        // 🕐 BLOCK TIMES (shown under each lesson)
+        // ────────────────────────────────────────────────────────────────────────────
+        const BLOCK_TIMES = {
+            1: '8:45-9:50',
+            2: '10:20-11:25',
+            3: '1:05-2:10',
+            4: '2:40-3:45'
+        };
         
         // ────────────────────────────────────────────────────────────────────────────
         // 1️⃣  SEMESTER START AND END DATES
@@ -1181,22 +1204,25 @@
                     const dayOfWeek = currentDate.getDay();
                     
                     if (isDayZero) {
-                        // Day Zero: Show all classes with lesson number 0.0
+                        // Day Zero: Show all classes with lesson number 0.0, NO TIMES
                         output += `<div class="day-row day-zero-row">`;
                         output += `<div class="day-label" style="background: #EF7D34;">Day 0</div>`;
                         output += `<div class="date-label">${dateStr}</div>`;
                         output += `<div class="lessons-container">`;
                         output += `<div style="font-weight: bold; color: #EF7D34; margin-bottom: 10px;">${isDayZero.name}</div>`;
                         
-                        // Show all classes (all periods A-G)
+                        // Show all classes (all periods A-G) without times
                         const allPeriods = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
                         allPeriods.forEach(period => {
                             if (lessonTrackers[period]) {
                                 const tracker = lessonTrackers[period];
                                 output += `<div class="lesson-block">`;
+                                output += `<div class="lesson-main">`;
                                 output += `<span class="lesson-period">${period}</span>`;
                                 output += `<span class="lesson-number">0.0</span>`;
                                 output += `<span class="lesson-class">${tracker.className}</span>`;
+                                output += `</div>`;
+                                // NO TIME on Day Zero
                                 output += `</div>`;
                             }
                         });
@@ -1213,62 +1239,68 @@
                         // Day Zero does NOT advance the rotation or count toward cycle days
                         currentDate.setDate(currentDate.getDate() + 1);
                     } else {
-                        // Regular rotation day processing
-                    output += `<div class="day-row">`;
-                    output += `<div class="day-label">Day ${rotationDay}</div>`;
-                    output += `<div class="date-label">${dateStr}</div>`;
-                    output += `<div class="lessons-container">`;
-                    
-                    const dayPeriods = ROTATION_SCHEDULE[rotationDay] || [];
-                    const lessonsToday = [];
-                    
-                    // Add regular rotation classes
-                    dayPeriods.forEach(period => {
-                        if (lessonTrackers[period]) {
-                            const tracker = lessonTrackers[period];
-                            const lessonNum = `${cycle}.${tracker.currentLesson}`;
-                            
-                            lessonsToday.push({
-                                period: period,
-                                lessonNum: lessonNum,
-                                className: tracker.className
-                            });
-                            
-                            // Increment for next time this period appears
-                            tracker.currentLesson++;
-                            if (tracker.currentLesson > 4) {
-                                tracker.currentLesson = 1;
+                        // Regular rotation day processing WITH TIMES
+                        output += `<div class="day-row">`;
+                        output += `<div class="day-label">Day ${rotationDay}</div>`;
+                        output += `<div class="date-label">${dateStr}</div>`;
+                        output += `<div class="lessons-container">`;
+                        
+                        const dayPeriods = ROTATION_SCHEDULE[rotationDay] || [];
+                        const lessonsToday = [];
+                        
+                        // Add regular rotation classes
+                        dayPeriods.forEach((period, blockIndex) => {
+                            if (lessonTrackers[period]) {
+                                const tracker = lessonTrackers[period];
+                                const lessonNum = `${cycle}.${tracker.currentLesson}`;
+                                const blockNum = blockIndex + 1; // Block 1, 2, 3, 4
+                                const blockTime = BLOCK_TIMES[blockNum];
+                                
+                                lessonsToday.push({
+                                    period: period,
+                                    lessonNum: lessonNum,
+                                    className: tracker.className,
+                                    blockTime: blockTime
+                                });
+                                
+                                // Increment for next time this period appears
+                                tracker.currentLesson++;
+                                if (tracker.currentLesson > 4) {
+                                    tracker.currentLesson = 1;
+                                }
                             }
-                        }
-                    });
-                    
-                    // Add lessons first
-                    if (lessonsToday.length > 0) {
-                        lessonsToday.forEach(lesson => {
-                            output += `<div class="lesson-block">`;
-                            output += `<span class="lesson-period">${lesson.period}</span>`;
-                            output += `<span class="lesson-number">${lesson.lessonNum}</span>`;
-                            output += `<span class="lesson-class">${lesson.className}</span>`;
-                            output += `</div>`;
                         });
-                    }
-                    
-                    // Add special rules classes
-                    specialRules.forEach(rule => {
-                        if (rule.days.includes(dayOfWeek)) {
-                            output += `<div class="special-rule-indicator">📅 ${rule.className}</div>`;
+                        
+                        // Add special rules classes FIRST
+                        specialRules.forEach(rule => {
+                            if (rule.days.includes(dayOfWeek)) {
+                                output += `<div class="special-rule-indicator">📅 ${rule.className}</div>`;
+                            }
+                        });
+                        
+                        // Then add lessons with times
+                        if (lessonsToday.length > 0) {
+                            lessonsToday.forEach(lesson => {
+                                output += `<div class="lesson-block">`;
+                                output += `<div class="lesson-main">`;
+                                output += `<span class="lesson-period">${lesson.period}</span>`;
+                                output += `<span class="lesson-number">${lesson.lessonNum}</span>`;
+                                output += `<span class="lesson-class">${lesson.className}</span>`;
+                                output += `</div>`;
+                                output += `<div class="lesson-time">${lesson.blockTime}</div>`;
+                                output += `</div>`;
+                            });
                         }
-                    });
-                    
-                    if (lessonsToday.length === 0 && !specialRules.some(rule => rule.days.includes(dayOfWeek))) {
-                        output += `<span style="color: #999; font-style: italic;">No classes scheduled</span>`;
-                    }
-                    
-                    output += `</div></div>`;
-                    
-                    currentDate.setDate(currentDate.getDate() + 1);
-                    rotationDay = (rotationDay % 7) + 1;
-                    daysInCycle++;
+                        
+                        if (lessonsToday.length === 0 && !specialRules.some(rule => rule.days.includes(dayOfWeek))) {
+                            output += `<span style="color: #999; font-style: italic;">No classes scheduled</span>`;
+                        }
+                        
+                        output += `</div></div>`;
+                        
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        rotationDay = (rotationDay % 7) + 1;
+                        daysInCycle++;
                     } // End of else block for regular day processing
                 }
                 
@@ -1433,44 +1465,46 @@
                         currentDate.setDate(currentDate.getDate() + 1);
                     } else {
                         // Regular rotation day processing
-                    const dayOfWeek = currentDate.getDay();
-                    const dayPeriods = ROTATION_SCHEDULE[rotationDay] || [];
-                    const periodData = {};
-                    
-                    dayPeriods.forEach(period => {
-                        if (lessonTrackers[period]) {
-                            const tracker = lessonTrackers[period];
-                            const lessonNum = `${cycle}.${tracker.currentLesson}`;
-                            periodData[period] = `${tracker.className} - Lesson ${lessonNum}`;
-                            tracker.currentLesson++;
-                            if (tracker.currentLesson > 4) {
-                                tracker.currentLesson = 1;
+                        const dayOfWeek = currentDate.getDay();
+                        const dayPeriods = ROTATION_SCHEDULE[rotationDay] || [];
+                        const periodData = {};
+                        
+                        dayPeriods.forEach((period, blockIndex) => {
+                            if (lessonTrackers[period]) {
+                                const tracker = lessonTrackers[period];
+                                const lessonNum = `${cycle}.${tracker.currentLesson}`;
+                                const blockNum = blockIndex + 1;
+                                const blockTime = BLOCK_TIMES[blockNum];
+                                periodData[period] = `${tracker.className} - Lesson ${lessonNum} (${blockTime})`;
+                                tracker.currentLesson++;
+                                if (tracker.currentLesson > 4) {
+                                    tracker.currentLesson = 1;
+                                }
                             }
-                        }
-                    });
-                    
-                    let row = `${dateStr},${dayName},Day ${rotationDay},` + allPeriods.map(p => periodData[p] || '').join(',');
-                    
-                    // Add special rules data with session numbers
-                    if (specialClassNames.length > 0) {
-                        const specialData = specialClassNames.map(className => {
-                            const rule = specialRules.find(r => r.className === className);
-                            if (rule && rule.days.includes(dayOfWeek)) {
-                                const sessionNum = specialTrackers[className].currentSession;
-                                specialTrackers[className].currentSession++;
-                                return `${className} - Session ${sessionNum}`;
-                            }
-                            return '';
                         });
-                        row += ',' + specialData.join(',');
-                    }
-                    
-                    row += ','; // Empty notes column for regular days
-                    csv += row + '\n';
-                    
-                    currentDate.setDate(currentDate.getDate() + 1);
-                    rotationDay = (rotationDay % 7) + 1;
-                    daysInCycle++;
+                        
+                        let row = `${dateStr},${dayName},Day ${rotationDay},` + allPeriods.map(p => periodData[p] || '').join(',');
+                        
+                        // Add special rules data with session numbers
+                        if (specialClassNames.length > 0) {
+                            const specialData = specialClassNames.map(className => {
+                                const rule = specialRules.find(r => r.className === className);
+                                if (rule && rule.days.includes(dayOfWeek)) {
+                                    const sessionNum = specialTrackers[className].currentSession;
+                                    specialTrackers[className].currentSession++;
+                                    return `${className} - Session ${sessionNum}`;
+                                }
+                                return '';
+                            });
+                            row += ',' + specialData.join(',');
+                        }
+                        
+                        row += ','; // Empty notes column for regular days
+                        csv += row + '\n';
+                        
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        rotationDay = (rotationDay % 7) + 1;
+                        daysInCycle++;
                     } // End of else block for regular day processing
                 }
                 
