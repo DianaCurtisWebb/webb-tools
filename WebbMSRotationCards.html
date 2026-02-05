@@ -301,6 +301,28 @@
             font-size: 0.95em;
         }
         
+        .custom-notes-footer {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF5DC 100%);
+            border-top: 3px solid #EF7D34;
+            padding: 18px 25px;
+            text-align: left;
+            color: #3D4241;
+        }
+        
+        .custom-notes-header {
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #EF7D34;
+        }
+        
+        .custom-notes-text {
+            font-size: 1em;
+            font-weight: 500;
+            color: #3D4241;
+        }
+        
         /* Print Styles */
         @media print {
             body {
@@ -398,6 +420,13 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            
+            .custom-notes-footer {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 0.95em;
+                padding: 15px 20px;
+            }
         }
     </style>
 </head>
@@ -436,6 +465,20 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">3</span>
+                        <span class="step-title">Custom Notes (Optional)</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="customNotes">Add custom text to appear at the bottom of each card</label>
+                        <input type="text" id="customNotes" placeholder="e.g., WebbPress meets Tuesday & Thursday at 7:40">
+                    </div>
+                    <div style="margin-top: 5px; color: #666; font-size: 13px;">
+                        This will appear at the bottom of every day's card
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
                         <span class="step-title">Generate Reference Cards</span>
                     </div>
                     <button onclick="generateCards()">📅 Generate Reference Cards</button>
@@ -547,6 +590,7 @@
             updateClassData();
             
             const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
+            const customNotes = document.getElementById('customNotes').value;
             
             // Create period-to-class mapping and period-to-showLessons mapping
             const periodToClass = {};
@@ -627,6 +671,15 @@
                 });
                 
                 output += `</div>`;
+                
+                // Add custom notes footer if provided
+                if (customNotes) {
+                    output += `<div class="custom-notes-footer">`;
+                    output += `<div class="custom-notes-header">📌 NOTES & REMINDERS</div>`;
+                    output += `<div class="custom-notes-text">${customNotes}</div>`;
+                    output += `</div>`;
+                }
+                
                 output += `</div>`;
             }
             
