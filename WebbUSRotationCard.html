@@ -294,6 +294,13 @@
             font-weight: 600;
         }
         
+        .lesson-number {
+            color: #666;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 0.95em;
+        }
+        
         /* Print Styles */
         @media print {
             body {
@@ -440,6 +447,22 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">3</span>
+                        <span class="step-title">Display Options</span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="showLessonNumbers" checked style="width: auto; accent-color: #1B5E3F;">
+                            <span style="color: #3D4241;">Show lesson numbers (1-4) next to class names</span>
+                        </label>
+                        <div style="margin-left: 30px; margin-top: 5px; color: #666; font-size: 13px;">
+                            Tracks which lesson you're on in the rotation cycle
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
                         <span class="step-title">Generate Reference Cards</span>
                     </div>
                     <button onclick="generateCards()">📅 Generate Reference Cards</button>
@@ -543,6 +566,7 @@
             updateClassData();
             
             const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
+            const showLessonNumbers = document.getElementById('showLessonNumbers').checked;
             
             // Create period-to-class mapping
             const periodToClass = {};
@@ -550,6 +574,12 @@
                 cls.periods.forEach(period => {
                     periodToClass[period] = cls.name;
                 });
+            });
+            
+            // Track which lesson number (1-4) for each period
+            const lessonTrackers = {};
+            Object.keys(periodToClass).forEach(period => {
+                lessonTrackers[period] = 1; // Start at lesson 1
             });
             
             let output = '';
@@ -581,10 +611,23 @@
                         const className = periodToClass[periodForThisBlock];
                         
                         if (className) {
+                            const lessonNum = lessonTrackers[periodForThisBlock];
                             output += `<div class="activity-label has-class">`;
                             output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
                             output += `<span class="class-name">${className}</span>`;
+                            
+                            // Only show lesson number if toggle is checked
+                            if (showLessonNumbers) {
+                                output += `<span class="lesson-number"> — Lesson ${lessonNum}</span>`;
+                            }
+                            
                             output += `</div>`;
+                            
+                            // Increment lesson counter, wrap at 4
+                            lessonTrackers[periodForThisBlock]++;
+                            if (lessonTrackers[periodForThisBlock] > 4) {
+                                lessonTrackers[periodForThisBlock] = 1;
+                            }
                         } else {
                             output += `<div class="activity-label">`;
                             output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
