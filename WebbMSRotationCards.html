@@ -231,8 +231,9 @@
         
         .time-block {
             display: flex;
-            border-bottom: 1px solid #e9ecef;
-            padding: 12px 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 15px 0;
+            align-items: stretch;
         }
         
         .time-block:last-child {
@@ -240,89 +241,162 @@
         }
         
         .time-column {
-            flex: 0 0 140px;
+            width: 140px;
             padding-right: 20px;
+            border-right: 3px solid #8DC63F;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .time-label {
-            font-weight: 600;
-            color: #3D4241;
-            font-size: 14px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #1B5E3F;
         }
         
         .duration-label {
-            color: #6c757d;
-            font-size: 12px;
+            font-size: 0.85em;
+            color: #666;
             margin-top: 2px;
         }
         
         .activity-column {
             flex: 1;
+            padding-left: 20px;
             display: flex;
             align-items: center;
         }
         
         .activity-label {
-            font-size: 14px;
-            color: #495057;
+            font-size: 1.1em;
+            color: #3D4241;
         }
         
         .activity-label.has-class {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            font-weight: 600;
+            color: #1B5E3F;
         }
         
         .period-badge {
-            background: #1B5E3F;
+            background: #2B7A78;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
             font-weight: 600;
-            white-space: nowrap;
+            margin-right: 10px;
+            display: inline-block;
         }
         
         .class-name {
+            color: #EF7D34;
             font-weight: 600;
-            color: #3D4241;
-            font-size: 15px;
         }
         
         .lesson-number {
-            color: #EF7D34;
-            font-weight: 600;
-            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 0.95em;
         }
         
-        /* Print styles */
+        /* Print Styles */
         @media print {
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
             
             .container {
                 box-shadow: none;
                 border-radius: 0;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
             }
             
-            .header, .setup-section {
-                display: none;
+            .header,
+            .setup-section,
+            button,
+            .no-print {
+                display: none !important;
             }
             
             .content {
                 padding: 0;
+                margin: 0;
+            }
+            
+            .output-section {
+                margin: 0;
             }
             
             .day-card {
                 page-break-after: always;
-                margin-bottom: 0;
+                page-break-inside: avoid;
+                margin: 0;
+                padding: 0;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
             }
             
-            button {
-                display: none;
+            .day-card:last-child {
+                page-break-after: auto;
+            }
+            
+            .teacher-name-header {
+                padding: 20px;
+                font-size: 1.5em;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .day-card-header {
+                padding: 30px 20px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .day-card-header h2 {
+                font-size: 2.5em;
+            }
+            
+            .day-card-header .periods-list {
+                font-size: 1.2em;
+            }
+            
+            .day-card-body {
+                padding: 30px;
+                flex: 1;
+            }
+            
+            .time-block {
+                padding: 12px 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .time-label {
+                font-size: 1em;
+            }
+            
+            .duration-label {
+                font-size: 0.8em;
+            }
+            
+            .activity-label {
+                font-size: 1em;
+            }
+            
+            .period-badge,
+            .class-name {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
