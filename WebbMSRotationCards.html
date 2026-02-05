@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webb Middle School 7-Day Rotation Reference Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E3F 0%, #8DC63F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .setup-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .setup-step {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .setup-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            background: #EF7D34;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #3D4241;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: #3D4241;
+            margin-bottom: 5px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .class-entry {
+            background: white;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .class-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .class-name-input {
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 5px 10px;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .remove-class-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .period-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .period-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .period-checkbox input[type="checkbox"] {
+            width: auto;
+            accent-color: #1B5E3F;
+        }
+        
+        button {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 94, 63, 0.3);
+            background: #2B7A78;
+        }
+        
+        .output-section {
+            margin-top: 30px;
+        }
+        
+        /* Day Card Styles */
+        .day-card {
+            background: white;
+            border: 3px solid #8DC63F;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        
+        .day-card-header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .day-card-header h2 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .day-card-header .periods-list {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .teacher-name-header {
+            background: #EF7D34;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .day-card-body {
+            padding: 20px;
+        }
+        
+        .time-block {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+            padding: 12px 0;
+        }
+        
+        .time-block:last-child {
+            border-bottom: none;
+        }
+        
+        .time-column {
+            flex: 0 0 140px;
+            padding-right: 20px;
+        }
+        
+        .time-label {
+            font-weight: 600;
+            color: #3D4241;
+            font-size: 14px;
+        }
+        
+        .duration-label {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .activity-column {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .activity-label {
+            font-size: 14px;
+            color: #495057;
+        }
+        
+        .activity-label.has-class {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .period-badge {
+            background: #1B5E3F;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .class-name {
+            font-weight: 600;
+            color: #3D4241;
+            font-size: 15px;
+        }
+        
+        .lesson-number {
+            color: #EF7D34;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .header, .setup-section {
+                display: none;
+            }
+            
+            .content {
+                padding: 0;
+            }
+            
+            .day-card {
+                page-break-after: always;
+                margin-bottom: 0;
+            }
+            
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Webb Middle School</h1>
+            <p>7-Day Rotation Reference Cards</p>
+        </div>
+        
+        <div class="content">
+            <div class="setup-section">
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <span class="step-title">Enter Your Name</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherName">Teacher Name</label>
+                        <input type="text" id="teacherName" placeholder="Your name">
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <span class="step-title">Add Your Classes</span>
+                    </div>
+                    <div style="margin-bottom: 15px; color: #666; font-size: 14px;">
+                        *Add a class entry for your planning periods (e.g., "Planning Period" or "Prep")
+                    </div>
+                    <div id="classesContainer"></div>
+                    <button onclick="addClass()">+ Add Another Class</button>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <span class="step-title">Display Options</span>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="showLessonNumbers" checked style="width: auto; accent-color: #1B5E3F;">
+                            <span style="color: #3D4241;">Show lesson numbers (1-5) next to class names</span>
+                        </label>
+                        <div style="margin-left: 30px; margin-top: 5px; color: #666; font-size: 13px;">
+                            Tracks which lesson you're on in the rotation cycle
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
+                        <span class="step-title">Generate Reference Cards</span>
+                    </div>
+                    <button onclick="generateCards()">📅 Generate Reference Cards</button>
+                    <button onclick="window.print()" style="background: #6c757d;">🖨️ Print/Save as PDF</button>
+                </div>
+            </div>
+            
+            <div id="output" class="output-section"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Middle School daily schedule structure
+        const DAILY_SCHEDULE = [
+            { time: '7:45 - 8:10', duration: '25 min', activity: 'Classroom Prep', type: 'general' },
+            { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours', type: 'general' },
+            { time: '8:30 - 8:40', duration: '10 min', activity: 'Assembly', type: 'general' },
+            { time: '8:45 - 9:40', duration: '55 min', activity: 'Block 1', type: 'block', blockNum: 1 },
+            { time: '9:45 - 10:15', duration: '30 min', activity: 'Activities', type: 'general' },
+            { time: '10:20 - 11:15', duration: '55 min', activity: 'Block 2', type: 'block', blockNum: 2 },
+            { time: '11:20 - 12:00', duration: '40 min', activity: 'Lunch', type: 'general' },
+            { time: '12:05 - 1:00', duration: '55 min', activity: 'Block 3', type: 'block', blockNum: 3 },
+            { time: '1:05 - 2:00', duration: '55 min', activity: 'Block 4', type: 'block', blockNum: 4 },
+            { time: '2:10 - 3:05', duration: '55 min', activity: 'Block 5', type: 'block', blockNum: 5 },
+            { time: '3:05 - 3:35', duration: '30 min', activity: 'Study Hall', type: 'general' }
+        ];
+        
+        // Middle School 7-day rotation pattern (5 blocks per day)
+        const ROTATION_SCHEDULE = {
+            1: ['A', 'B', 'C', 'FLEX', 'D'],
+            2: ['E', 'F', 'G', 'A', 'H'],
+            3: ['B', 'C', 'D', 'E', 'F'],
+            4: ['G', 'A', 'H', 'FLEX', 'C'],
+            5: ['E', 'D', 'F', 'B', 'G'],
+            6: ['A', 'B', 'C', 'FLEX', 'H'],
+            7: ['D', 'H', 'G', 'E', 'F']
+        };
+        
+        let classData = {};
+        let classIdCounter = 0;
+        
+        function addClass() {
+            const classId = classIdCounter++;
+            const container = document.getElementById('classesContainer');
+            
+            const classDiv = document.createElement('div');
+            classDiv.className = 'class-entry';
+            classDiv.id = `class-${classId}`;
+            
+            classDiv.innerHTML = `
+                <div class="class-entry-header">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., Math 7)">
+                    <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                </div>
+                <div class="period-checkboxes">
+                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FLEX'].map(period => `
+                        <label class="period-checkbox">
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}">
+                            <span>${period}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(classDiv);
+            
+            classData[classId] = {
+                name: '',
+                periods: []
+            };
+        }
+        
+        function removeClass(classId) {
+            const element = document.getElementById(`class-${classId}`);
+            if (element) {
+                element.remove();
+                delete classData[classId];
+            }
+        }
+        
+        function updateClassData() {
+            Object.keys(classData).forEach(classId => {
+                const nameInput = document.getElementById(`className-${classId}`);
+                if (nameInput) {
+                    classData[classId].name = nameInput.value;
+                    
+                    const periods = [];
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FLEX'].forEach(period => {
+                        const checkbox = document.getElementById(`period-${classId}-${period}`);
+                        if (checkbox && checkbox.checked) {
+                            periods.push(period);
+                        }
+                    });
+                    classData[classId].periods = periods;
+                }
+            });
+        }
+        
+        function generateCards() {
+            updateClassData();
+            
+            const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
+            const showLessonNumbers = document.getElementById('showLessonNumbers').checked;
+            
+            // Create period-to-class mapping
+            const periodToClass = {};
+            Object.values(classData).forEach(cls => {
+                cls.periods.forEach(period => {
+                    periodToClass[period] = cls.name;
+                });
+            });
+            
+            // Track which lesson number (1-5) for each period
+            const lessonTrackers = {};
+            Object.keys(periodToClass).forEach(period => {
+                lessonTrackers[period] = 1; // Start at lesson 1
+            });
+            
+            let output = '';
+            
+            // Generate a card for each rotation day (1-7)
+            for (let day = 1; day <= 7; day++) {
+                const dayPeriods = ROTATION_SCHEDULE[day];
+                
+                output += `<div class="day-card">`;
+                output += `<div class="teacher-name-header">${teacherName}</div>`;
+                output += `<div class="day-card-header">`;
+                output += `<h2>Day ${day}</h2>`;
+                output += `<div class="periods-list">Periods: ${dayPeriods.join(', ')}</div>`;
+                output += `</div>`;
+                output += `<div class="day-card-body">`;
+                
+                // Go through each time block
+                DAILY_SCHEDULE.forEach((timeBlock) => {
+                    output += `<div class="time-block">`;
+                    output += `<div class="time-column">`;
+                    output += `<div class="time-label">${timeBlock.time}</div>`;
+                    output += `<div class="duration-label">${timeBlock.duration}</div>`;
+                    output += `</div>`;
+                    output += `<div class="activity-column">`;
+                    
+                    if (timeBlock.type === 'block') {
+                        // This is a class block - show which period and class
+                        const periodForThisBlock = dayPeriods[timeBlock.blockNum - 1];
+                        const className = periodToClass[periodForThisBlock];
+                        
+                        if (className) {
+                            const lessonNum = lessonTrackers[periodForThisBlock];
+                            output += `<div class="activity-label has-class">`;
+                            output += `<span class="period-badge">${periodForThisBlock}</span>`;
+                            output += `<span class="class-name">${className}</span>`;
+                            
+                            // Only show lesson number if toggle is checked
+                            if (showLessonNumbers) {
+                                output += `<span class="lesson-number"> — Lesson ${lessonNum}</span>`;
+                            }
+                            
+                            output += `</div>`;
+                            
+                            // Increment lesson counter, wrap at 5 (MS has 5 blocks)
+                            lessonTrackers[periodForThisBlock]++;
+                            if (lessonTrackers[periodForThisBlock] > 5) {
+                                lessonTrackers[periodForThisBlock] = 1;
+                            }
+                        } else {
+                            output += `<div class="activity-label">`;
+                            output += `<span class="period-badge">${periodForThisBlock}</span>`;
+                            output += `<span style="color: #999; font-style: italic;">Free Period</span>`;
+                            output += `</div>`;
+                        }
+                    } else {
+                        // General activity (lunch, office hours, etc.)
+                        output += `<div class="activity-label">${timeBlock.activity}</div>`;
+                    }
+                    
+                    output += `</div>`;
+                    output += `</div>`;
+                });
+                
+                output += `</div>`;
+                output += `</div>`;
+            }
+            
+            document.getElementById('output').innerHTML = output;
+        }
+        
+        // Initialize with one default class
+        window.addEventListener('DOMContentLoaded', function() {
+            addClass();
+        });
+    </script>
+</body>
+</html>
