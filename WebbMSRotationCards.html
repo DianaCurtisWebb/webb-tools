@@ -436,7 +436,7 @@
                     ${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FLEX'].map(period => `
                         <label class="period-checkbox">
                             <input type="checkbox" id="period-${classId}-${period}" value="${period}">
-                            <span>${period}</span>
+                            <span>${period === 'FLEX' ? 'FLEX' : period + ' Period'}</span>
                         </label>
                     `).join('')}
                 </div>
@@ -527,7 +527,7 @@
                         if (className) {
                             const lessonNum = lessonTrackers[periodForThisBlock];
                             output += `<div class="activity-label has-class">`;
-                            output += `<span class="period-badge">${periodForThisBlock}</span>`;
+                            output += `<span class="period-badge">${periodForThisBlock === 'FLEX' ? 'FLEX' : periodForThisBlock + ' Period'}</span>`;
                             output += `<span class="class-name">${className}</span>`;
                             
                             // Only show lesson number if toggle is checked
@@ -544,7 +544,7 @@
                             }
                         } else {
                             output += `<div class="activity-label">`;
-                            output += `<span class="period-badge">${periodForThisBlock}</span>`;
+                            output += `<span class="period-badge">${periodForThisBlock === 'FLEX' ? 'FLEX' : periodForThisBlock + ' Period'}</span>`;
                             output += `<span style="color: #999; font-style: italic;">Free Period</span>`;
                             output += `</div>`;
                         }
