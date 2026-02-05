@@ -436,22 +436,6 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">3</span>
-                        <span class="step-title">Display Options</span>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" id="showLessonNumbers" checked style="width: auto; accent-color: #1B5E3F;">
-                            <span style="color: #3D4241;">Show lesson numbers (1-5) next to class names</span>
-                        </label>
-                        <div style="margin-left: 30px; margin-top: 5px; color: #666; font-size: 13px;">
-                            Tracks which lesson you're on in the rotation cycle
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="setup-step">
-                    <div class="step-header">
-                        <span class="step-number">4</span>
                         <span class="step-title">Generate Reference Cards</span>
                     </div>
                     <button onclick="generateCards()">📅 Generate Reference Cards</button>
@@ -514,13 +498,20 @@
                         </label>
                     `).join('')}
                 </div>
+                <div style="margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #666;">
+                        <input type="checkbox" id="showLessons-${classId}" checked style="width: auto; accent-color: #1B5E3F;">
+                        <span>Show lesson numbers for this class</span>
+                    </label>
+                </div>
             `;
             
             container.appendChild(classDiv);
             
             classData[classId] = {
                 name: '',
-                periods: []
+                periods: [],
+                showLessons: true
             };
         }
         
@@ -535,8 +526,10 @@
         function updateClassData() {
             Object.keys(classData).forEach(classId => {
                 const nameInput = document.getElementById(`className-${classId}`);
+                const showLessonsCheckbox = document.getElementById(`showLessons-${classId}`);
                 if (nameInput) {
                     classData[classId].name = nameInput.value;
+                    classData[classId].showLessons = showLessonsCheckbox ? showLessonsCheckbox.checked : true;
                     
                     const periods = [];
                     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FLEX'].forEach(period => {
@@ -554,13 +547,14 @@
             updateClassData();
             
             const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
-            const showLessonNumbers = document.getElementById('showLessonNumbers').checked;
             
-            // Create period-to-class mapping
+            // Create period-to-class mapping and period-to-showLessons mapping
             const periodToClass = {};
+            const periodToShowLessons = {};
             Object.values(classData).forEach(cls => {
                 cls.periods.forEach(period => {
                     periodToClass[period] = cls.name;
+                    periodToShowLessons[period] = cls.showLessons;
                 });
             });
             
@@ -600,12 +594,13 @@
                         
                         if (className) {
                             const lessonNum = lessonTrackers[periodForThisBlock];
+                            const showLessons = periodToShowLessons[periodForThisBlock];
                             output += `<div class="activity-label has-class">`;
                             output += `<span class="period-badge">${periodForThisBlock === 'FLEX' ? 'FLEX' : periodForThisBlock + ' Period'}</span>`;
                             output += `<span class="class-name">${className}</span>`;
                             
-                            // Only show lesson number if toggle is checked
-                            if (showLessonNumbers) {
+                            // Only show lesson number if this class has it enabled
+                            if (showLessons) {
                                 output += `<span class="lesson-number"> — Lesson ${lessonNum}</span>`;
                             }
                             
