@@ -229,6 +229,28 @@
             padding: 20px;
         }
         
+        .custom-notes-footer {
+            background: #F5F5DC;
+            border-top: 2px solid #8DC63F;
+            padding: 15px 20px;
+            margin-top: auto;
+        }
+        
+        .custom-notes-footer h4 {
+            color: #1B5E3F;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .custom-notes-content {
+            color: #3D4241;
+            font-size: 0.9em;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        
         .time-block {
             display: flex;
             border-bottom: 2px solid #f0f0f0;
@@ -403,6 +425,20 @@
                 padding: 3px 8px;
                 font-size: 0.85em;
             }
+            
+            .custom-notes-footer {
+                padding: 15px 20px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .custom-notes-footer h4 {
+                font-size: 0.85em;
+            }
+            
+            .custom-notes-content {
+                font-size: 0.85em;
+            }
         }
         
         @media screen {
@@ -447,6 +483,17 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">3</span>
+                        <span class="step-title">Custom Notes (Optional)</span>
+                    </div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 14px;">
+                        Add any notes that should appear at the bottom of each rotation day card (e.g., recurring meetings, special activities)
+                    </div>
+                    <textarea id="customNotes" rows="4" style="width: 100%; padding: 10px; border: 2px solid #C9C49D; border-radius: 8px; font-size: 14px; font-family: inherit;" placeholder="Example:&#10;WebbPress meets Tuesday & Thursday at 7:40&#10;Yearbook deadline: First Friday of each month"></textarea>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
                         <span class="step-title">Generate Reference Cards</span>
                     </div>
                     <button onclick="generateCards()">📅 Generate Reference Cards</button>
@@ -560,6 +607,7 @@
             updateClassData();
             
             const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
+            const customNotes = document.getElementById('customNotes').value.trim();
             
             // Create period-to-class mapping with lesson preferences
             const periodToClass = {};
@@ -642,6 +690,15 @@
                 });
                 
                 output += `</div>`;
+                
+                // Add custom notes footer if provided
+                if (customNotes) {
+                    output += `<div class="custom-notes-footer">`;
+                    output += `<h4>📌 Notes & Reminders</h4>`;
+                    output += `<div class="custom-notes-content">${customNotes}</div>`;
+                    output += `</div>`;
+                }
+                
                 output += `</div>`;
             }
             
