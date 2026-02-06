@@ -552,9 +552,105 @@
         
         let classData = {};
         let classIdCounter = 0;
+        const STORAGE_KEY = 'webbRotationCardsData';
         
-        function addClass() {
-            const classId = classIdCounter++;
+        // Auto-save function with debouncing
+        let saveTimeout;
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveData();
+            }, 1000); // Wait 1 second after last change
+        }
+        
+        // Save all form data to localStorage
+        function saveData() {
+            updateClassData();
+            const data = {
+                teacherName: document.getElementById('teacherName').value,
+                customNotes: document.getElementById('customNotes').value,
+                classData: classData,
+                classIdCounter: classIdCounter,
+                savedAt: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                console.log('Data auto-saved');
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+        
+        // Load saved data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return false;
+            
+            try {
+                const data = JSON.parse(saved);
+                
+                // Restore teacher name
+                if (data.teacherName) {
+                    document.getElementById('teacherName').value = data.teacherName;
+                }
+                
+                // Restore custom notes
+                if (data.customNotes) {
+                    document.getElementById('customNotes').value = data.customNotes;
+                }
+                
+                // Restore class ID counter
+                if (data.classIdCounter) {
+                    classIdCounter = data.classIdCounter;
+                }
+                
+                // Restore classes
+                if (data.classData && Object.keys(data.classData).length > 0) {
+                    // Clear default class entry first
+                    document.getElementById('classesContainer').innerHTML = '';
+                    
+                    // Recreate each class
+                    Object.entries(data.classData).forEach(([id, cls]) => {
+                        const numericId = parseInt(id);
+                        addClassWithId(numericId);
+                        
+                        // Set class name
+                        const nameInput = document.getElementById(`className-${numericId}`);
+                        if (nameInput && cls.name) {
+                            nameInput.value = cls.name;
+                        }
+                        
+                        // Set periods
+                        if (cls.periods) {
+                            cls.periods.forEach(period => {
+                                const checkbox = document.getElementById(`period-${numericId}-${period}`);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                }
+                            });
+                        }
+                        
+                        // Set lesson number toggle
+                        const showLessonsCheckbox = document.getElementById(`showLessons-${numericId}`);
+                        if (showLessonsCheckbox) {
+                            showLessonsCheckbox.checked = cls.showLessons !== false;
+                        }
+                    });
+                    
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+                return false;
+            }
+        }
+        
+        // Add class with specific ID (for restoring saved data)
+        function addClassWithId(classId) {
             const container = document.getElementById('classesContainer');
             
             const classDiv = document.createElement('div');
@@ -563,20 +659,20 @@
             
             classDiv.innerHTML = `
                 <div class="class-entry-header">
-                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
                     <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
                 </div>
                 <div class="period-checkboxes">
                     ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
                         <label class="period-checkbox">
-                            <input type="checkbox" id="period-${classId}-${period}" value="${period}">
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
                             <span>${period} Period</span>
                         </label>
                     `).join('')}
                 </div>
                 <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="showLessons-${classId}" checked style="width: auto; accent-color: #1B5E3F;">
+                        <input type="checkbox" id="showLessons-${classId}" checked onchange="autoSave()" style="width: auto; accent-color: #1B5E3F;">
                         <span style="color: #666; font-size: 14px;">Show lesson numbers for this class</span>
                     </label>
                 </div>
@@ -591,11 +687,52 @@
             };
         }
         
+        function addClass() {
+            const classId = classIdCounter++;
+            const container = document.getElementById('classesContainer');
+            
+            const classDiv = document.createElement('div');
+            classDiv.className = 'class-entry';
+            classDiv.id = `class-${classId}`;
+            
+            classDiv.innerHTML = `
+                <div class="class-entry-header">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
+                    <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                </div>
+                <div class="period-checkboxes">
+                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
+                        <label class="period-checkbox">
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
+                            <span>${period} Period</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="showLessons-${classId}" checked onchange="autoSave()" style="width: auto; accent-color: #1B5E3F;">
+                        <span style="color: #666; font-size: 14px;">Show lesson numbers for this class</span>
+                    </label>
+                </div>
+            `;
+            
+            container.appendChild(classDiv);
+            
+            classData[classId] = {
+                name: '',
+                periods: [],
+                showLessons: true
+            };
+            
+            autoSave();
+        }
+        
         function removeClass(classId) {
             const element = document.getElementById(`class-${classId}`);
             if (element) {
                 element.remove();
                 delete classData[classId];
+                autoSave();
             }
         }
         
@@ -724,7 +861,22 @@
         
         // Initialize with one default class
         window.addEventListener('DOMContentLoaded', function() {
-            addClass();
+            // Try to load saved data
+            const dataLoaded = loadData();
+            
+            // If no saved data, add one default class
+            if (!dataLoaded) {
+                addClass();
+            }
+            
+            // Add autosave listeners to text inputs
+            document.getElementById('teacherName').addEventListener('input', autoSave);
+            document.getElementById('customNotes').addEventListener('input', autoSave);
+        });
+        
+        // Auto-save before page unload
+        window.addEventListener('beforeunload', function() {
+            saveData();
         });
     </script>
 </body>
