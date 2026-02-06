@@ -551,6 +551,121 @@
     </div>
     
     <script>
+        // Auto-save functionality using localStorage
+        const AUTOSAVE_KEY = 'webbMSScheduleData';
+        
+        // Save all form data to localStorage
+        function autoSave() {
+            const data = {
+                teacherName: document.getElementById('teacherName').value,
+                customNotes: document.getElementById('customNotes').value,
+                flex1: document.getElementById('flex1').value,
+                flex4: document.getElementById('flex4').value,
+                flex6: document.getElementById('flex6').value,
+                activity1: document.getElementById('activity1').value,
+                activity2: document.getElementById('activity2').value,
+                activity3: document.getElementById('activity3').value,
+                activity4: document.getElementById('activity4').value,
+                activity5: document.getElementById('activity5').value,
+                activity6: document.getElementById('activity6').value,
+                activity7: document.getElementById('activity7').value,
+                classes: {}
+            };
+            
+            // Save all class data
+            Object.keys(classData).forEach(classId => {
+                const nameInput = document.getElementById(`className-${classId}`);
+                const showLessonsCheckbox = document.getElementById(`showLessons-${classId}`);
+                if (nameInput) {
+                    data.classes[classId] = {
+                        name: nameInput.value,
+                        showLessons: showLessonsCheckbox ? showLessonsCheckbox.checked : true,
+                        periods: []
+                    };
+                    
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach(period => {
+                        const checkbox = document.getElementById(`period-${classId}-${period}`);
+                        if (checkbox && checkbox.checked) {
+                            data.classes[classId].periods.push(period);
+                        }
+                    });
+                }
+            });
+            
+            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
+        }
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem(AUTOSAVE_KEY);
+            if (!savedData) return;
+            
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Restore basic fields
+                if (data.teacherName) document.getElementById('teacherName').value = data.teacherName;
+                if (data.customNotes) document.getElementById('customNotes').value = data.customNotes;
+                if (data.flex1) document.getElementById('flex1').value = data.flex1;
+                if (data.flex4) document.getElementById('flex4').value = data.flex4;
+                if (data.flex6) document.getElementById('flex6').value = data.flex6;
+                if (data.activity1) document.getElementById('activity1').value = data.activity1;
+                if (data.activity2) document.getElementById('activity2').value = data.activity2;
+                if (data.activity3) document.getElementById('activity3').value = data.activity3;
+                if (data.activity4) document.getElementById('activity4').value = data.activity4;
+                if (data.activity5) document.getElementById('activity5').value = data.activity5;
+                if (data.activity6) document.getElementById('activity6').value = data.activity6;
+                if (data.activity7) document.getElementById('activity7').value = data.activity7;
+                
+                // Restore classes
+                if (data.classes) {
+                    // Clear the default class first
+                    document.getElementById('classesContainer').innerHTML = '';
+                    
+                    Object.entries(data.classes).forEach(([savedClassId, savedClass]) => {
+                        // Add a new class entry
+                        const classId = classIdCounter++;
+                        const container = document.getElementById('classesContainer');
+                        
+                        const classDiv = document.createElement('div');
+                        classDiv.className = 'class-entry';
+                        classDiv.id = `class-${classId}`;
+                        
+                        classDiv.innerHTML = `
+                            <div class="class-entry-header">
+                                <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., Math 7)" value="${savedClass.name || ''}">
+                                <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                            </div>
+                            <div class="period-checkboxes">
+                                ${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(period => `
+                                    <label class="period-checkbox">
+                                        <input type="checkbox" id="period-${classId}-${period}" value="${period}" ${savedClass.periods.includes(period) ? 'checked' : ''}>
+                                        <span>${period + ' Period'}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #666;">
+                                    <input type="checkbox" id="showLessons-${classId}" ${savedClass.showLessons ? 'checked' : ''} style="width: auto; accent-color: #1B5E3F;">
+                                    <span>Show lesson numbers for this class</span>
+                                </label>
+                            </div>
+                        `;
+                        
+                        container.appendChild(classDiv);
+                        
+                        classData[classId] = {
+                            name: savedClass.name || '',
+                            periods: savedClass.periods || [],
+                            showLessons: savedClass.showLessons !== false
+                        };
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+            }
+        }
+        
         // Middle School daily schedule structure
         const DAILY_SCHEDULE = [
             { time: '7:45 - 8:10', duration: '25 min', activity: 'Classroom Prep', type: 'general' },
@@ -787,7 +902,17 @@
         
         // Initialize with one default class
         window.addEventListener('DOMContentLoaded', function() {
-            addClass();
+            // Load saved data first
+            loadSavedData();
+            
+            // If no saved data, add one default class
+            if (Object.keys(classData).length === 0) {
+                addClass();
+            }
+            
+            // Add autosave listeners to all inputs
+            document.addEventListener('input', autoSave);
+            document.addEventListener('change', autoSave);
         });
     </script>
 </body>
