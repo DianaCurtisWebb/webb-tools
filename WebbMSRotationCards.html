@@ -326,7 +326,7 @@
         /* Print Styles */
         @media print {
             @page {
-                margin: 0;
+                margin: 0.5in;
                 size: letter;
             }
             
@@ -369,7 +369,6 @@
                 border: none;
                 border-radius: 0;
                 box-shadow: none;
-                height: 100vh;
                 display: flex;
                 flex-direction: column;
             }
@@ -379,46 +378,46 @@
             }
             
             .teacher-name-header {
-                padding: 20px;
-                font-size: 1.5em;
+                padding: 15px;
+                font-size: 1.3em;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
             .day-card-header {
-                padding: 30px 20px;
+                padding: 20px 15px;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
             .day-card-header h2 {
-                font-size: 2.5em;
+                font-size: 2em;
             }
             
             .day-card-header .periods-list {
-                font-size: 1.2em;
+                font-size: 1.1em;
             }
             
             .day-card-body {
-                padding: 30px;
+                padding: 20px;
                 flex: 1;
             }
             
             .time-block {
-                padding: 12px 0;
+                padding: 10px 0;
                 border-bottom: 1px solid #e0e0e0;
             }
             
             .time-label {
-                font-size: 1em;
+                font-size: 0.95em;
             }
             
             .duration-label {
-                font-size: 0.8em;
+                font-size: 0.75em;
             }
             
             .activity-label {
-                font-size: 1em;
+                font-size: 0.95em;
             }
             
             .period-badge,
@@ -430,8 +429,8 @@
             .custom-notes-footer {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-size: 0.95em;
-                padding: 15px 20px;
+                font-size: 0.85em;
+                padding: 12px 15px;
             }
         }
     </style>
@@ -716,10 +715,12 @@
                         
                         // Check if this is a FLEX period
                         if (periodForThisBlock === 'FLEX') {
-                            const flexText = flexValues[day] || 'FLEX';
-                            output += `<div class="activity-label">`;
+                            const flexText = flexValues[day] || '';
+                            output += `<div class="activity-label has-class">`;
                             output += `<span class="period-badge">FLEX</span>`;
-                            output += `<span style="color: #3D4241;">${flexText}</span>`;
+                            if (flexText) {
+                                output += `<span class="class-name">${flexText}</span>`;
+                            }
                             output += `</div>`;
                         } else {
                             const className = periodToClass[periodForThisBlock];
@@ -751,9 +752,14 @@
                             }
                         }
                     } else if (timeBlock.type === 'activity') {
-                        // This is the Activity period - show custom text for this day
+                        // This is the Activity period - show badge plus custom text for this day
                         const activityText = activityValues[day];
-                        output += `<div class="activity-label">${activityText}</div>`;
+                        output += `<div class="activity-label has-class">`;
+                        output += `<span class="period-badge">Activity</span>`;
+                        if (activityText && activityText !== 'Activity') {
+                            output += `<span class="class-name">${activityText}</span>`;
+                        }
+                        output += `</div>`;
                     } else {
                         // General activity (lunch, office hours, etc.)
                         output += `<div class="activity-label">${timeBlock.activity}</div>`;
