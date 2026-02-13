@@ -491,6 +491,9 @@
                     
                     <div>
                         <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">Activity Periods (9:45 - 10:15)</h4>
+                        <div style="margin-bottom: 10px; color: #666; font-size: 13px; font-style: italic;">
+                            Note: Days 3 & 4 are always Advisory
+                        </div>
                         <div class="input-group">
                             <label for="activity1">Activity - Day 1</label>
                             <input type="text" id="activity1" placeholder="e.g., Duty, Meeting, Planning">
@@ -498,14 +501,6 @@
                         <div class="input-group">
                             <label for="activity2">Activity - Day 2</label>
                             <input type="text" id="activity2" placeholder="e.g., Duty, Meeting, Planning">
-                        </div>
-                        <div class="input-group">
-                            <label for="activity3">Activity - Day 3</label>
-                            <input type="text" id="activity3" placeholder="e.g., Duty, Meeting, Planning">
-                        </div>
-                        <div class="input-group">
-                            <label for="activity4">Activity - Day 4</label>
-                            <input type="text" id="activity4" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                         <div class="input-group">
                             <label for="activity5">Activity - Day 5</label>
@@ -564,8 +559,6 @@
                 flex6: document.getElementById('flex6').value,
                 activity1: document.getElementById('activity1').value,
                 activity2: document.getElementById('activity2').value,
-                activity3: document.getElementById('activity3').value,
-                activity4: document.getElementById('activity4').value,
                 activity5: document.getElementById('activity5').value,
                 activity6: document.getElementById('activity6').value,
                 activity7: document.getElementById('activity7').value,
@@ -611,8 +604,6 @@
                 if (data.flex6) document.getElementById('flex6').value = data.flex6;
                 if (data.activity1) document.getElementById('activity1').value = data.activity1;
                 if (data.activity2) document.getElementById('activity2').value = data.activity2;
-                if (data.activity3) document.getElementById('activity3').value = data.activity3;
-                if (data.activity4) document.getElementById('activity4').value = data.activity4;
                 if (data.activity5) document.getElementById('activity5').value = data.activity5;
                 if (data.activity6) document.getElementById('activity6').value = data.activity6;
                 if (data.activity7) document.getElementById('activity7').value = data.activity7;
@@ -778,8 +769,8 @@
             const activityValues = {
                 1: document.getElementById('activity1').value || 'Activity',
                 2: document.getElementById('activity2').value || 'Activity',
-                3: document.getElementById('activity3').value || 'Activity',
-                4: document.getElementById('activity4').value || 'Activity',
+                3: 'Advisory',  // Always Advisory
+                4: 'Advisory',  // Always Advisory
                 5: document.getElementById('activity5').value || 'Activity',
                 6: document.getElementById('activity6').value || 'Activity',
                 7: document.getElementById('activity7').value || 'Activity'
@@ -869,9 +860,14 @@
                     } else if (timeBlock.type === 'activity') {
                         // This is the Activity period - show badge plus custom text for this day
                         const activityText = activityValues[day];
+                        const isAdvisory = (day === 3 || day === 4);
+                        
                         output += `<div class="activity-label has-class">`;
-                        output += `<span class="period-badge">Activity</span>`;
-                        if (activityText && activityText !== 'Activity') {
+                        output += `<span class="period-badge">${isAdvisory ? 'Advisory' : 'Activity'}</span>`;
+                        
+                        // For Advisory days, don't show additional text since it's always just "Advisory"
+                        // For other days, show custom text if provided and different from default
+                        if (!isAdvisory && activityText && activityText !== 'Activity') {
                             output += `<span class="class-name">${activityText}</span>`;
                         }
                         output += `</div>`;
