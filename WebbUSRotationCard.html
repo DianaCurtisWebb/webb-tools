@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webb Upper School - 7-Day Rotation Reference Cards</title>
+    <title>Webb Middle School 7-Day Rotation Reference Cards</title>
     <style>
         * {
             margin: 0;
@@ -149,7 +149,7 @@
         
         .period-checkboxes {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -219,49 +219,14 @@
         .teacher-name-header {
             background: #EF7D34;
             color: white;
-            padding: 15px;
             text-align: center;
+            padding: 15px;
             font-size: 1.3em;
             font-weight: 600;
         }
         
         .day-card-body {
             padding: 20px;
-        }
-        
-        .custom-notes-footer {
-            background: #F5F5DC;
-            border-top: 2px solid #8DC63F;
-            padding: 15px 20px;
-            margin-top: auto;
-        }
-        
-        .schedule-note-footer {
-            background: #E8F4F8;
-            border-top: 2px solid #2B7A78;
-            padding: 12px 20px;
-        }
-        
-        .schedule-note-content {
-            color: #2B7A78;
-            font-size: 0.9em;
-            font-style: italic;
-            line-height: 1.5;
-        }
-        
-        .custom-notes-footer h4 {
-            color: #1B5E3F;
-            font-size: 0.9em;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .custom-notes-content {
-            color: #3D4241;
-            font-size: 0.9em;
-            line-height: 1.5;
-            white-space: pre-line;
         }
         
         .time-block {
@@ -336,10 +301,33 @@
             font-size: 0.95em;
         }
         
+        .custom-notes-footer {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF5DC 100%);
+            border-top: 3px solid #EF7D34;
+            padding: 18px 25px;
+            text-align: left;
+            color: #3D4241;
+        }
+        
+        .custom-notes-header {
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #EF7D34;
+        }
+        
+        .custom-notes-text {
+            font-size: 1em;
+            font-weight: 500;
+            color: #3D4241;
+        }
+        
         /* Print Styles */
         @media print {
             @page {
                 margin: 0.5in;
+                size: letter;
             }
             
             body {
@@ -370,6 +358,7 @@
             
             .output-section {
                 margin: 0;
+                padding: 0;
             }
             
             .day-card {
@@ -389,43 +378,38 @@
             }
             
             .teacher-name-header {
-                padding: 10px 15px;
-                font-size: 1.2em;
+                padding: 15px;
+                font-size: 1.3em;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
             .day-card-header {
-                padding: 15px;
+                padding: 20px 15px;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
             .day-card-header h2 {
-                font-size: 1.8em;
-                margin-bottom: 3px;
+                font-size: 2em;
             }
             
             .day-card-header .periods-list {
-                font-size: 1em;
+                font-size: 1.1em;
             }
             
             .day-card-body {
-                padding: 15px;
+                padding: 20px;
                 flex: 1;
             }
             
             .time-block {
-                padding: 8px 0;
+                padding: 10px 0;
                 border-bottom: 1px solid #e0e0e0;
             }
             
-            .time-column {
-                width: 120px;
-            }
-            
             .time-label {
-                font-size: 0.9em;
+                font-size: 0.95em;
             }
             
             .duration-label {
@@ -433,7 +417,7 @@
             }
             
             .activity-label {
-                font-size: 0.9em;
+                font-size: 0.95em;
             }
             
             .period-badge,
@@ -442,79 +426,41 @@
                 print-color-adjust: exact;
             }
             
-            .period-badge {
-                padding: 2px 6px;
-                font-size: 0.8em;
-            }
-            
-            .class-name {
-                font-size: 0.9em;
-            }
-            
-            .lesson-number {
-                font-size: 0.85em;
-            }
-            
             .custom-notes-footer {
-                padding: 10px 15px;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-            }
-            
-            .custom-notes-footer h4 {
-                font-size: 0.8em;
-                margin-bottom: 5px;
-            }
-            
-            .custom-notes-content {
-                font-size: 0.8em;
-                line-height: 1.3;
-            }
-            
-            .schedule-note-footer {
-                padding: 8px 15px;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            
-            .schedule-note-content {
-                font-size: 0.8em;
-            }
-        }
-        
-        @media screen {
-            .no-print {
-                display: block;
+                font-size: 0.85em;
+                padding: 12px 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header no-print">
-            <h1>Webb Upper School</h1>
+        <div class="header">
+            <h1>Webb Middle School</h1>
             <p>7-Day Rotation Reference Cards</p>
         </div>
         
         <div class="content">
-            <div class="setup-section no-print">
+            <div class="setup-section">
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">1</span>
-                        <span class="step-title">Teacher Name</span>
+                        <span class="step-title">Enter Your Name</span>
                     </div>
                     <div class="input-group">
-                        <label for="teacherName">Your Name (will appear at top of each card)</label>
-                        <input type="text" id="teacherName" placeholder="e.g., Ms. Diana Smith">
+                        <label for="teacherName">Teacher Name</label>
+                        <input type="text" id="teacherName" placeholder="Your name">
                     </div>
                 </div>
                 
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">2</span>
-                        <span class="step-title">Define Your Classes</span>
+                        <span class="step-title">Add Your Classes</span>
                     </div>
-                    <div style="margin-bottom: 15px; color: #666; font-size: 14px; font-style: italic;">
+                    <div style="margin-bottom: 15px; color: #666; font-size: 14px;">
                         *Add a class entry for your planning periods (e.g., "Planning Period" or "Prep")
                     </div>
                     <div id="classesContainer"></div>
@@ -524,17 +470,70 @@
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">3</span>
-                        <span class="step-title">Custom Notes (Optional)</span>
+                        <span class="step-title">Activity & FLEX Periods</span>
                     </div>
-                    <div style="margin-bottom: 10px; color: #666; font-size: 14px;">
-                        Add any notes that should appear at the bottom of each rotation day card (e.g., recurring meetings, special activities)
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">Activity Periods (9:45 - 10:15)</h4>
+                        <div style="margin-bottom: 10px; color: #666; font-size: 13px; font-style: italic;">
+                            Note: Days 3 & 4 are always Advisory
+                        </div>
+                        <div class="input-group">
+                            <label for="activity1">Activity - Day 1</label>
+                            <input type="text" id="activity1" placeholder="e.g., Duty, Meeting, Planning">
+                        </div>
+                        <div class="input-group">
+                            <label for="activity2">Activity - Day 2</label>
+                            <input type="text" id="activity2" placeholder="e.g., Duty, Meeting, Planning">
+                        </div>
+                        <div class="input-group">
+                            <label for="activity5">Activity - Day 5</label>
+                            <input type="text" id="activity5" placeholder="e.g., Duty, Meeting, Planning">
+                        </div>
+                        <div class="input-group">
+                            <label for="activity6">Activity - Day 6</label>
+                            <input type="text" id="activity6" placeholder="e.g., Duty, Meeting, Planning">
+                        </div>
+                        <div class="input-group">
+                            <label for="activity7">Activity - Day 7</label>
+                            <input type="text" id="activity7" placeholder="e.g., Duty, Meeting, Planning">
+                        </div>
                     </div>
-                    <textarea id="customNotes" rows="4" style="width: 100%; padding: 10px; border: 2px solid #C9C49D; border-radius: 8px; font-size: 14px; font-family: inherit;" placeholder="Example:&#10;WebbPress meets Tuesday & Thursday at 7:40&#10;Yearbook deadline: First Friday of each month"></textarea>
+                    
+                    <div>
+                        <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">FLEX Periods (Block 4: varies by day)</h4>
+                        <div class="input-group">
+                            <label for="flex1">FLEX - Day 1</label>
+                            <input type="text" id="flex1" placeholder="e.g., Study Hall, Club Meeting">
+                        </div>
+                        <div class="input-group">
+                            <label for="flex4">FLEX - Day 4</label>
+                            <input type="text" id="flex4" placeholder="e.g., Study Hall, Club Meeting">
+                        </div>
+                        <div class="input-group">
+                            <label for="flex6">FLEX - Day 6</label>
+                            <input type="text" id="flex6" placeholder="e.g., Study Hall, Club Meeting">
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="setup-step">
                     <div class="step-header">
                         <span class="step-number">4</span>
+                        <span class="step-title">Custom Notes (Optional)</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="customNotes">Add custom text to appear at the bottom of each card</label>
+                        <input type="text" id="customNotes" placeholder="e.g., No Office Hours on Wednesday">
+                    </div>
+                    <div style="margin-top: 5px; color: #666; font-size: 13px;">
+                        This will appear at the bottom of every day's card
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">5</span>
                         <span class="step-title">Generate Reference Cards</span>
                     </div>
                     <button onclick="generateCards()">📅 Generate Reference Cards</button>
@@ -547,168 +546,145 @@
     </div>
     
     <script>
-        // Daily schedule structure
+        // Auto-save functionality using localStorage
+        const AUTOSAVE_KEY = 'webbMSScheduleData';
+        
+        // Save all form data to localStorage
+        function autoSave() {
+            const data = {
+                teacherName: document.getElementById('teacherName').value,
+                customNotes: document.getElementById('customNotes').value,
+                flex1: document.getElementById('flex1').value,
+                flex4: document.getElementById('flex4').value,
+                flex6: document.getElementById('flex6').value,
+                activity1: document.getElementById('activity1').value,
+                activity2: document.getElementById('activity2').value,
+                activity5: document.getElementById('activity5').value,
+                activity6: document.getElementById('activity6').value,
+                activity7: document.getElementById('activity7').value,
+                classes: {}
+            };
+            
+            // Save all class data
+            Object.keys(classData).forEach(classId => {
+                const nameInput = document.getElementById(`className-${classId}`);
+                const showLessonsCheckbox = document.getElementById(`showLessons-${classId}`);
+                if (nameInput) {
+                    data.classes[classId] = {
+                        name: nameInput.value,
+                        showLessons: showLessonsCheckbox ? showLessonsCheckbox.checked : true,
+                        periods: []
+                    };
+                    
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach(period => {
+                        const checkbox = document.getElementById(`period-${classId}-${period}`);
+                        if (checkbox && checkbox.checked) {
+                            data.classes[classId].periods.push(period);
+                        }
+                    });
+                }
+            });
+            
+            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
+        }
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem(AUTOSAVE_KEY);
+            if (!savedData) return;
+            
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Restore basic fields
+                if (data.teacherName) document.getElementById('teacherName').value = data.teacherName;
+                if (data.customNotes) document.getElementById('customNotes').value = data.customNotes;
+                if (data.flex1) document.getElementById('flex1').value = data.flex1;
+                if (data.flex4) document.getElementById('flex4').value = data.flex4;
+                if (data.flex6) document.getElementById('flex6').value = data.flex6;
+                if (data.activity1) document.getElementById('activity1').value = data.activity1;
+                if (data.activity2) document.getElementById('activity2').value = data.activity2;
+                if (data.activity5) document.getElementById('activity5').value = data.activity5;
+                if (data.activity6) document.getElementById('activity6').value = data.activity6;
+                if (data.activity7) document.getElementById('activity7').value = data.activity7;
+                
+                // Restore classes
+                if (data.classes) {
+                    // Clear the default class first
+                    document.getElementById('classesContainer').innerHTML = '';
+                    
+                    Object.entries(data.classes).forEach(([savedClassId, savedClass]) => {
+                        // Add a new class entry
+                        const classId = classIdCounter++;
+                        const container = document.getElementById('classesContainer');
+                        
+                        const classDiv = document.createElement('div');
+                        classDiv.className = 'class-entry';
+                        classDiv.id = `class-${classId}`;
+                        
+                        classDiv.innerHTML = `
+                            <div class="class-entry-header">
+                                <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., Math 7)" value="${savedClass.name || ''}">
+                                <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                            </div>
+                            <div class="period-checkboxes">
+                                ${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(period => `
+                                    <label class="period-checkbox">
+                                        <input type="checkbox" id="period-${classId}-${period}" value="${period}" ${savedClass.periods.includes(period) ? 'checked' : ''}>
+                                        <span>${period + ' Period'}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #666;">
+                                    <input type="checkbox" id="showLessons-${classId}" ${savedClass.showLessons ? 'checked' : ''} style="width: auto; accent-color: #1B5E3F;">
+                                    <span>Show lesson numbers for this class</span>
+                                </label>
+                            </div>
+                        `;
+                        
+                        container.appendChild(classDiv);
+                        
+                        classData[classId] = {
+                            name: savedClass.name || '',
+                            periods: savedClass.periods || [],
+                            showLessons: savedClass.showLessons !== false
+                        };
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+            }
+        }
+        
+        // Middle School daily schedule structure
         const DAILY_SCHEDULE = [
-            { time: '8:00 - 8:10', duration: '10 min', activity: 'Arrival and Prep', type: 'general' },
+            { time: '7:45 - 8:10', duration: '25 min', activity: 'Classroom Prep', type: 'general' },
             { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours*', type: 'general' },
-            { time: '8:30 - 8:40', duration: '10 min', activity: 'Advisory', type: 'general' },
-            { time: '8:45 - 9:50', duration: '65 min', activity: 'Block 1', type: 'block', blockNum: 1 },
-            { time: '9:55 - 10:15', duration: '20 min', activity: 'FLEX 1', type: 'general' },
-            { time: '10:20 - 11:25', duration: '65 min', activity: 'Block 2', type: 'block', blockNum: 2 },
-            { time: '11:30 - 12:00', duration: '30 min', activity: 'FLEX 2', type: 'general' },
-            { time: '12:05 - 1:00', duration: '55 min', activity: 'Lunch', type: 'general' },
-            { time: '1:05 - 2:10', duration: '65 min', activity: 'Block 3', type: 'block', blockNum: 3 },
-            { time: '2:15 - 2:35', duration: '20 min', activity: 'Office Hours*', type: 'general' },
-            { time: '2:40 - 3:45', duration: '65 min', activity: 'Block 4', type: 'block', blockNum: 4 }
+            { time: '8:30 - 8:40', duration: '10 min', activity: 'Assembly', type: 'general' },
+            { time: '8:45 - 9:40', duration: '55 min', activity: 'Block 1', type: 'block', blockNum: 1 },
+            { time: '9:45 - 10:15', duration: '30 min', activity: 'Activity', type: 'activity' },
+            { time: '10:20 - 11:15', duration: '55 min', activity: 'Block 2', type: 'block', blockNum: 2 },
+            { time: '11:20 - 12:00', duration: '40 min', activity: 'Lunch', type: 'general' },
+            { time: '12:05 - 1:00', duration: '55 min', activity: 'Block 3', type: 'block', blockNum: 3 },
+            { time: '1:05 - 2:00', duration: '55 min', activity: 'Block 4', type: 'block', blockNum: 4 },
+            { time: '2:10 - 3:05', duration: '55 min', activity: 'Block 5', type: 'block', blockNum: 5 },
+            { time: '3:05 - 3:35', duration: '30 min', activity: 'Study Hall', type: 'general' }
         ];
         
-        // 7-day rotation pattern
+        // Middle School 7-day rotation pattern (5 blocks per day)
         const ROTATION_SCHEDULE = {
-            1: ['A', 'B', 'C', 'D'],
-            2: ['E', 'G', 'A', 'F'],
-            3: ['B', 'D', 'E', 'C'],
-            4: ['F', 'A', 'D', 'G'],
-            5: ['E', 'F', 'B', 'C'],
-            6: ['A', 'B', 'G', 'D'],
-            7: ['G', 'C', 'E', 'F']
+            1: ['A', 'B', 'C', 'FLEX', 'D'],
+            2: ['E', 'F', 'G', 'A', 'H'],
+            3: ['B', 'C', 'D', 'E', 'F'],
+            4: ['G', 'A', 'H', 'FLEX', 'C'],
+            5: ['E', 'D', 'F', 'B', 'G'],
+            6: ['A', 'B', 'C', 'FLEX', 'H'],
+            7: ['D', 'H', 'G', 'E', 'F']
         };
         
         let classData = {};
         let classIdCounter = 0;
-        const STORAGE_KEY = 'webbRotationCardsData';
-        
-        // Auto-save function with debouncing
-        let saveTimeout;
-        function autoSave() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                saveData();
-            }, 1000); // Wait 1 second after last change
-        }
-        
-        // Save all form data to localStorage
-        function saveData() {
-            updateClassData();
-            const data = {
-                teacherName: document.getElementById('teacherName').value,
-                customNotes: document.getElementById('customNotes').value,
-                classData: classData,
-                classIdCounter: classIdCounter,
-                savedAt: new Date().toISOString(),
-                version: '1.0'
-            };
-            
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-                console.log('Data auto-saved');
-            } catch (error) {
-                console.error('Error saving data:', error);
-            }
-        }
-        
-        // Load saved data from localStorage
-        function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (!saved) return false;
-            
-            try {
-                const data = JSON.parse(saved);
-                
-                // Restore teacher name
-                if (data.teacherName) {
-                    document.getElementById('teacherName').value = data.teacherName;
-                }
-                
-                // Restore custom notes
-                if (data.customNotes) {
-                    document.getElementById('customNotes').value = data.customNotes;
-                }
-                
-                // Restore class ID counter
-                if (data.classIdCounter) {
-                    classIdCounter = data.classIdCounter;
-                }
-                
-                // Restore classes
-                if (data.classData && Object.keys(data.classData).length > 0) {
-                    // Clear default class entry first
-                    document.getElementById('classesContainer').innerHTML = '';
-                    
-                    // Recreate each class
-                    Object.entries(data.classData).forEach(([id, cls]) => {
-                        const numericId = parseInt(id);
-                        addClassWithId(numericId);
-                        
-                        // Set class name
-                        const nameInput = document.getElementById(`className-${numericId}`);
-                        if (nameInput && cls.name) {
-                            nameInput.value = cls.name;
-                        }
-                        
-                        // Set periods
-                        if (cls.periods) {
-                            cls.periods.forEach(period => {
-                                const checkbox = document.getElementById(`period-${numericId}-${period}`);
-                                if (checkbox) {
-                                    checkbox.checked = true;
-                                }
-                            });
-                        }
-                        
-                        // Set lesson number toggle
-                        const showLessonsCheckbox = document.getElementById(`showLessons-${numericId}`);
-                        if (showLessonsCheckbox) {
-                            showLessonsCheckbox.checked = cls.showLessons !== false;
-                        }
-                    });
-                    
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (error) {
-                console.error('Error loading saved data:', error);
-                return false;
-            }
-        }
-        
-        // Add class with specific ID (for restoring saved data)
-        function addClassWithId(classId) {
-            const container = document.getElementById('classesContainer');
-            
-            const classDiv = document.createElement('div');
-            classDiv.className = 'class-entry';
-            classDiv.id = `class-${classId}`;
-            
-            classDiv.innerHTML = `
-                <div class="class-entry-header">
-                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
-                    <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
-                </div>
-                <div class="period-checkboxes">
-                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
-                        <label class="period-checkbox">
-                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
-                            <span>${period} Period</span>
-                        </label>
-                    `).join('')}
-                </div>
-                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="showLessons-${classId}" checked onchange="autoSave()" style="width: auto; accent-color: #1B5E3F;">
-                        <span style="color: #666; font-size: 14px;">Show lesson numbers for this class</span>
-                    </label>
-                </div>
-            `;
-            
-            container.appendChild(classDiv);
-            
-            classData[classId] = {
-                name: '',
-                periods: [],
-                showLessons: true
-            };
-        }
         
         function addClass() {
             const classId = classIdCounter++;
@@ -720,21 +696,21 @@
             
             classDiv.innerHTML = `
                 <div class="class-entry-header">
-                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., Math 7)">
                     <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
                 </div>
                 <div class="period-checkboxes">
-                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
+                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(period => `
                         <label class="period-checkbox">
-                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
-                            <span>${period} Period</span>
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}">
+                            <span>${period + ' Period'}</span>
                         </label>
                     `).join('')}
                 </div>
-                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="showLessons-${classId}" checked onchange="autoSave()" style="width: auto; accent-color: #1B5E3F;">
-                        <span style="color: #666; font-size: 14px;">Show lesson numbers for this class</span>
+                <div style="margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #666;">
+                        <input type="checkbox" id="showLessons-${classId}" checked style="width: auto; accent-color: #1B5E3F;">
+                        <span>Show lesson numbers for this class</span>
                     </label>
                 </div>
             `;
@@ -746,8 +722,6 @@
                 periods: [],
                 showLessons: true
             };
-            
-            autoSave();
         }
         
         function removeClass(classId) {
@@ -755,7 +729,6 @@
             if (element) {
                 element.remove();
                 delete classData[classId];
-                autoSave();
             }
         }
         
@@ -763,13 +736,12 @@
             Object.keys(classData).forEach(classId => {
                 const nameInput = document.getElementById(`className-${classId}`);
                 const showLessonsCheckbox = document.getElementById(`showLessons-${classId}`);
-                
                 if (nameInput) {
                     classData[classId].name = nameInput.value;
                     classData[classId].showLessons = showLessonsCheckbox ? showLessonsCheckbox.checked : true;
                     
                     const periods = [];
-                    ['A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(period => {
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach(period => {
                         const checkbox = document.getElementById(`period-${classId}-${period}`);
                         if (checkbox && checkbox.checked) {
                             periods.push(period);
@@ -784,20 +756,37 @@
             updateClassData();
             
             const teacherName = document.getElementById('teacherName').value || 'Teacher Schedule';
-            const customNotes = document.getElementById('customNotes').value.trim();
+            const customNotes = document.getElementById('customNotes').value;
             
-            // Create period-to-class mapping with lesson preferences
+            // Get FLEX values
+            const flexValues = {
+                1: document.getElementById('flex1').value || 'FLEX',
+                4: document.getElementById('flex4').value || 'FLEX',
+                6: document.getElementById('flex6').value || 'FLEX'
+            };
+            
+            // Get Activity values for each day
+            const activityValues = {
+                1: document.getElementById('activity1').value || 'Activity',
+                2: document.getElementById('activity2').value || 'Activity',
+                3: 'Advisory',  // Always Advisory
+                4: 'Advisory',  // Always Advisory
+                5: document.getElementById('activity5').value || 'Activity',
+                6: document.getElementById('activity6').value || 'Activity',
+                7: document.getElementById('activity7').value || 'Activity'
+            };
+            
+            // Create period-to-class mapping and period-to-showLessons mapping
             const periodToClass = {};
-            const periodShowLessons = {};
-            
+            const periodToShowLessons = {};
             Object.values(classData).forEach(cls => {
                 cls.periods.forEach(period => {
                     periodToClass[period] = cls.name;
-                    periodShowLessons[period] = cls.showLessons;
+                    periodToShowLessons[period] = cls.showLessons;
                 });
             });
             
-            // Track which lesson number (1-4) for each period
+            // Track which lesson number (1-5) for each period
             const lessonTrackers = {};
             Object.keys(periodToClass).forEach(period => {
                 lessonTrackers[period] = 1; // Start at lesson 1
@@ -829,34 +818,59 @@
                     if (timeBlock.type === 'block') {
                         // This is a class block - show which period and class
                         const periodForThisBlock = dayPeriods[timeBlock.blockNum - 1];
-                        const className = periodToClass[periodForThisBlock];
                         
-                        if (className) {
-                            const lessonNum = lessonTrackers[periodForThisBlock];
-                            const showLessons = periodShowLessons[periodForThisBlock];
-                            
+                        // Check if this is a FLEX period
+                        if (periodForThisBlock === 'FLEX') {
+                            const flexText = flexValues[day] || '';
                             output += `<div class="activity-label has-class">`;
-                            output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
-                            output += `<span class="class-name">${className}</span>`;
-                            
-                            // Only show lesson number if this class has it enabled
-                            if (showLessons) {
-                                output += `<span class="lesson-number"> — Lesson ${lessonNum}</span>`;
+                            output += `<span class="period-badge">FLEX</span>`;
+                            if (flexText) {
+                                output += `<span class="class-name">${flexText}</span>`;
                             }
-                            
                             output += `</div>`;
-                            
-                            // Increment lesson counter, wrap at 4
-                            lessonTrackers[periodForThisBlock]++;
-                            if (lessonTrackers[periodForThisBlock] > 4) {
-                                lessonTrackers[periodForThisBlock] = 1;
-                            }
                         } else {
-                            output += `<div class="activity-label">`;
-                            output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
-                            output += `<span style="color: #999; font-style: italic;">Free Period</span>`;
-                            output += `</div>`;
+                            const className = periodToClass[periodForThisBlock];
+                            
+                            if (className) {
+                                const lessonNum = lessonTrackers[periodForThisBlock];
+                                const showLessons = periodToShowLessons[periodForThisBlock];
+                                output += `<div class="activity-label has-class">`;
+                                output += `<span class="period-badge">${periodForThisBlock + ' Period'}</span>`;
+                                output += `<span class="class-name">${className}</span>`;
+                                
+                                // Only show lesson number if this class has it enabled
+                                if (showLessons) {
+                                    output += `<span class="lesson-number"> — Lesson ${lessonNum}</span>`;
+                                }
+                                
+                                output += `</div>`;
+                                
+                                // Increment lesson counter, wrap at 5 (MS has 5 blocks)
+                                lessonTrackers[periodForThisBlock]++;
+                                if (lessonTrackers[periodForThisBlock] > 5) {
+                                    lessonTrackers[periodForThisBlock] = 1;
+                                }
+                            } else {
+                                output += `<div class="activity-label">`;
+                                output += `<span class="period-badge">${periodForThisBlock + ' Period'}</span>`;
+                                output += `<span style="color: #999; font-style: italic;">Free Period</span>`;
+                                output += `</div>`;
+                            }
                         }
+                    } else if (timeBlock.type === 'activity') {
+                        // This is the Activity period - show badge plus custom text for this day
+                        const activityText = activityValues[day];
+                        const isAdvisory = (day === 3 || day === 4);
+                        
+                        output += `<div class="activity-label has-class">`;
+                        output += `<span class="period-badge">${isAdvisory ? 'Advisory' : 'Activity'}</span>`;
+                        
+                        // For Advisory days, don't show additional text since it's always just "Advisory"
+                        // For other days, show custom text if provided and different from default
+                        if (!isAdvisory && activityText && activityText !== 'Activity') {
+                            output += `<span class="class-name">${activityText}</span>`;
+                        }
+                        output += `</div>`;
                     } else {
                         // General activity (lunch, office hours, etc.)
                         output += `<div class="activity-label">${timeBlock.activity}</div>`;
@@ -868,16 +882,16 @@
                 
                 output += `</div>`;
                 
-                // Add Webb Work Time note (always shows)
-                output += `<div class="schedule-note-footer">`;
-                output += `<div class="schedule-note-content">*Webb Work Time on Wednesdays from 7:50 - 8:20</div>`;
+                // Add permanent Webb Work Time note
+                output += `<div style="background: #f8f9fa; border-top: 2px solid #dee2e6; padding: 12px 20px; font-size: 0.85em; color: #666;">`;
+                output += `*Webb Work Time on Wednesdays from 7:50 - 8:20`;
                 output += `</div>`;
                 
                 // Add custom notes footer if provided
                 if (customNotes) {
                     output += `<div class="custom-notes-footer">`;
-                    output += `<h4>📌 Notes & Reminders</h4>`;
-                    output += `<div class="custom-notes-content">${customNotes}</div>`;
+                    output += `<div class="custom-notes-header">📌 NOTES & REMINDERS</div>`;
+                    output += `<div class="custom-notes-text">${customNotes}</div>`;
                     output += `</div>`;
                 }
                 
@@ -889,22 +903,17 @@
         
         // Initialize with one default class
         window.addEventListener('DOMContentLoaded', function() {
-            // Try to load saved data
-            const dataLoaded = loadData();
+            // Load saved data first
+            loadSavedData();
             
             // If no saved data, add one default class
-            if (!dataLoaded) {
+            if (Object.keys(classData).length === 0) {
                 addClass();
             }
             
-            // Add autosave listeners to text inputs
-            document.getElementById('teacherName').addEventListener('input', autoSave);
-            document.getElementById('customNotes').addEventListener('input', autoSave);
-        });
-        
-        // Auto-save before page unload
-        window.addEventListener('beforeunload', function() {
-            saveData();
+            // Add autosave listeners to all inputs
+            document.addEventListener('input', autoSave);
+            document.addEventListener('change', autoSave);
         });
     </script>
 </body>
