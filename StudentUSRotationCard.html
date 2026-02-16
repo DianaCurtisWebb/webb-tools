@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webb Upper School - Student Schedule Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E3F 0%, #8DC63F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .setup-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .setup-step {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .setup-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            background: #EF7D34;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #3D4241;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: #3D4241;
+            margin-bottom: 5px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .class-entry {
+            background: white;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .class-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .class-name-input {
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 5px 10px;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .remove-class-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .period-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .period-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .period-checkbox input[type="checkbox"] {
+            width: auto;
+            accent-color: #1B5E3F;
+        }
+        
+        button {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 94, 63, 0.3);
+            background: #2B7A78;
+        }
+        
+        .output-section {
+            margin-top: 30px;
+        }
+        
+        /* Day Card Styles */
+        .day-card {
+            background: white;
+            border: 3px solid #8DC63F;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        
+        .day-card-header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .day-card-header h2 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .day-card-header .periods-list {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .student-name-header {
+            background: #EF7D34;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .day-card-body {
+            padding: 15px;
+        }
+        
+        .time-block {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 0;
+        }
+        
+        .time-block:last-child {
+            border-bottom: none;
+        }
+        
+        .time-column {
+            width: 120px;
+            flex-shrink: 0;
+            padding-right: 15px;
+        }
+        
+        .time-label {
+            font-weight: 600;
+            color: #1B5E3F;
+            font-size: 1em;
+        }
+        
+        .duration-label {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+        
+        .activity-column {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .activity-label {
+            font-size: 1em;
+            color: #3D4241;
+        }
+        
+        .activity-label.has-class {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .period-badge {
+            background: #8DC63F;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .class-name {
+            font-weight: 600;
+            color: #1B5E3F;
+            font-size: 1.05em;
+        }
+        
+        .custom-notes-footer {
+            background: #f8f9fa;
+            border-top: 2px solid #8DC63F;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .custom-notes-footer h4 {
+            color: #1B5E3F;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .custom-notes-content {
+            color: #3D4241;
+            font-size: 0.95em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        /* Print Styles */
+        @media print {
+            @page {
+                margin: 0.5in;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .header,
+            .setup-section,
+            button,
+            .no-print {
+                display: none !important;
+            }
+            
+            .content {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .output-section {
+                margin: 0;
+            }
+            
+            .day-card {
+                page-break-after: always;
+                page-break-inside: avoid;
+                margin: 0;
+                padding: 0;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .day-card:last-child {
+                page-break-after: auto;
+            }
+            
+            .student-name-header {
+                padding: 10px 15px;
+                font-size: 1.2em;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .day-card-header {
+                padding: 15px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .day-card-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 3px;
+            }
+            
+            .day-card-header .periods-list {
+                font-size: 1em;
+            }
+            
+            .day-card-body {
+                padding: 15px;
+                flex: 1;
+            }
+            
+            .time-block {
+                padding: 8px 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .time-column {
+                width: 120px;
+            }
+            
+            .time-label {
+                font-size: 0.9em;
+            }
+            
+            .duration-label {
+                font-size: 0.75em;
+            }
+            
+            .activity-label {
+                font-size: 0.9em;
+            }
+            
+            .period-badge,
+            .class-name {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .period-badge {
+                padding: 2px 6px;
+                font-size: 0.8em;
+            }
+            
+            .class-name {
+                font-size: 0.9em;
+            }
+            
+            .custom-notes-footer {
+                padding: 10px 15px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .custom-notes-footer h4 {
+                font-size: 0.8em;
+                margin-bottom: 5px;
+            }
+            
+            .custom-notes-content {
+                font-size: 0.8em;
+                line-height: 1.3;
+            }
+        }
+        
+        @media screen {
+            .no-print {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Webb Upper School</h1>
+            <p>Student Schedule Cards - 7-Day Rotation</p>
+        </div>
+        
+        <div class="content">
+            <div class="setup-section">
+                <div class="setup-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Student Information</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" placeholder="Enter your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="advisorName">Advisor Name</label>
+                        <input type="text" id="advisorName" placeholder="Enter your advisor's name">
+                    </div>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Add Your Classes</div>
+                    </div>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                        💡 <strong>Tip:</strong> Don't forget to add free periods to your schedule if you have any!
+                    </p>
+                    <div id="classesContainer"></div>
+                    <button onclick="addClass()">+ Add Class</button>
+                </div>
+                
+                <div class="setup-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Notes & Reminders (Optional)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="customNotes">Add any notes or reminders you want on each card</label>
+                        <input type="text" id="customNotes" placeholder="e.g., After-school practices, club meetings, locker number, etc.">
+                    </div>
+                </div>
+                
+                <button onclick="generateCards()">📅 Generate My Schedule Cards</button>
+                <button onclick="window.print()" style="background: #EF7D34;">🖨️ Print Cards</button>
+            </div>
+            
+            <div class="output-section" id="output"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Rotation schedule - which periods meet on which days
+        const ROTATION_SCHEDULE = {
+            1: ['A', 'B', 'C', 'D'],
+            2: ['E', 'G', 'A', 'F'],
+            3: ['B', 'D', 'E', 'C'],
+            4: ['F', 'A', 'D', 'G'],
+            5: ['E', 'F', 'B', 'C'],
+            6: ['A', 'B', 'G', 'D'],
+            7: ['G', 'C', 'E', 'F']
+        };
+        
+        // Daily schedule structure - UPDATED to remove Arrival and Prep
+        const DAILY_SCHEDULE = [
+            { time: '8:10 - 8:25', duration: '15 min', activity: 'Teacher Office Hours', type: 'general' },
+            { time: '8:30 - 8:40', duration: '10 min', activity: 'Advisory', type: 'advisory' },
+            { time: '8:45 - 9:50', duration: '65 min', activity: 'Block 1', type: 'block', blockNum: 1 },
+            { time: '9:55 - 10:15', duration: '20 min', activity: 'FLEX 1', type: 'general' },
+            { time: '10:20 - 11:25', duration: '65 min', activity: 'Block 2', type: 'block', blockNum: 2 },
+            { time: '11:30 - 12:00', duration: '30 min', activity: 'FLEX 2', type: 'general' },
+            { time: '12:05 - 1:00', duration: '55 min', activity: 'Lunch', type: 'general' },
+            { time: '1:05 - 2:10', duration: '65 min', activity: 'Block 3', type: 'block', blockNum: 3 },
+            { time: '2:15 - 2:35', duration: '20 min', activity: 'Teacher Office Hours', type: 'general' },
+            { time: '2:40 - 3:45', duration: '65 min', activity: 'Block 4', type: 'block', blockNum: 4 }
+        ];
+        
+        let classData = {};
+        let classIdCounter = 0;
+        
+        // Auto-save functionality
+        function autoSave() {
+            saveData();
+        }
+        
+        function saveData() {
+            const studentName = document.getElementById('studentName').value;
+            const advisorName = document.getElementById('advisorName').value;
+            const customNotes = document.getElementById('customNotes').value;
+            
+            updateClassData();
+            
+            const data = {
+                studentName,
+                advisorName,
+                customNotes,
+                classData,
+                classIdCounter
+            };
+            
+            localStorage.setItem('webbStudentSchedule', JSON.stringify(data));
+        }
+        
+        function loadData() {
+            const saved = localStorage.getItem('webbStudentSchedule');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                document.getElementById('studentName').value = data.studentName || '';
+                document.getElementById('advisorName').value = data.advisorName || '';
+                document.getElementById('customNotes').value = data.customNotes || '';
+                
+                classData = data.classData || {};
+                classIdCounter = data.classIdCounter || 0;
+                
+                // Recreate class entries
+                Object.keys(classData).forEach(classId => {
+                    createClassEntry(parseInt(classId), classData[classId]);
+                });
+                
+                return Object.keys(classData).length > 0;
+            }
+            return false;
+        }
+        
+        function createClassEntry(classId, savedData = null) {
+            const container = document.getElementById('classesContainer');
+            
+            const classDiv = document.createElement('div');
+            classDiv.className = 'class-entry';
+            classDiv.id = `class-${classId}`;
+            
+            classDiv.innerHTML = `
+                <div class="class-entry-header">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
+                    <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                </div>
+                <div class="period-checkboxes">
+                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
+                        <label class="period-checkbox">
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
+                            <span>${period} Period</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(classDiv);
+            
+            if (savedData) {
+                document.getElementById(`className-${classId}`).value = savedData.name || '';
+                savedData.periods.forEach(period => {
+                    const checkbox = document.getElementById(`period-${classId}-${period}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            classData[classId] = savedData || {
+                name: '',
+                periods: []
+            };
+        }
+        
+        function addClass() {
+            const classId = classIdCounter++;
+            const container = document.getElementById('classesContainer');
+            
+            const classDiv = document.createElement('div');
+            classDiv.className = 'class-entry';
+            classDiv.id = `class-${classId}`;
+            
+            classDiv.innerHTML = `
+                <div class="class-entry-header">
+                    <input type="text" class="class-name-input" id="className-${classId}" placeholder="Class Name (e.g., AP English 11)" onchange="autoSave()">
+                    <button class="remove-class-btn" onclick="removeClass(${classId})">Remove</button>
+                </div>
+                <div class="period-checkboxes">
+                    ${['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(period => `
+                        <label class="period-checkbox">
+                            <input type="checkbox" id="period-${classId}-${period}" value="${period}" onchange="autoSave()">
+                            <span>${period} Period</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(classDiv);
+            
+            classData[classId] = {
+                name: '',
+                periods: []
+            };
+            
+            autoSave();
+        }
+        
+        function removeClass(classId) {
+            const element = document.getElementById(`class-${classId}`);
+            if (element) {
+                element.remove();
+                delete classData[classId];
+                autoSave();
+            }
+        }
+        
+        function updateClassData() {
+            Object.keys(classData).forEach(classId => {
+                const nameInput = document.getElementById(`className-${classId}`);
+                
+                if (nameInput) {
+                    classData[classId].name = nameInput.value;
+                    
+                    const periods = [];
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(period => {
+                        const checkbox = document.getElementById(`period-${classId}-${period}`);
+                        if (checkbox && checkbox.checked) {
+                            periods.push(period);
+                        }
+                    });
+                    classData[classId].periods = periods;
+                }
+            });
+        }
+        
+        function generateCards() {
+            updateClassData();
+            
+            const studentName = document.getElementById('studentName').value || 'Student Schedule';
+            const advisorName = document.getElementById('advisorName').value;
+            const customNotes = document.getElementById('customNotes').value.trim();
+            
+            // Create period-to-class mapping
+            const periodToClass = {};
+            
+            Object.values(classData).forEach(cls => {
+                cls.periods.forEach(period => {
+                    periodToClass[period] = cls.name;
+                });
+            });
+            
+            let output = '';
+            
+            // Generate a card for each rotation day (1-7)
+            for (let day = 1; day <= 7; day++) {
+                const dayPeriods = ROTATION_SCHEDULE[day];
+                
+                output += `<div class="day-card">`;
+                output += `<div class="student-name-header">${studentName}</div>`;
+                output += `<div class="day-card-header">`;
+                output += `<h2>Day ${day}</h2>`;
+                output += `<div class="periods-list">Periods: ${dayPeriods.join(', ')}</div>`;
+                output += `</div>`;
+                output += `<div class="day-card-body">`;
+                
+                // Go through each time block
+                DAILY_SCHEDULE.forEach((timeBlock) => {
+                    output += `<div class="time-block">`;
+                    output += `<div class="time-column">`;
+                    output += `<div class="time-label">${timeBlock.time}</div>`;
+                    output += `<div class="duration-label">${timeBlock.duration}</div>`;
+                    output += `</div>`;
+                    output += `<div class="activity-column">`;
+                    
+                    if (timeBlock.type === 'block') {
+                        // This is a class block - show which period and class
+                        const periodForThisBlock = dayPeriods[timeBlock.blockNum - 1];
+                        const className = periodToClass[periodForThisBlock];
+                        
+                        if (className) {
+                            output += `<div class="activity-label has-class">`;
+                            output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
+                            output += `<span class="class-name">${className}</span>`;
+                            output += `</div>`;
+                        } else {
+                            output += `<div class="activity-label">`;
+                            output += `<span class="period-badge">${periodForThisBlock} Period</span>`;
+                            output += `<span style="color: #999; font-style: italic;">Free Period</span>`;
+                            output += `</div>`;
+                        }
+                    } else if (timeBlock.type === 'advisory') {
+                        // Advisory block - show advisor name if provided
+                        output += `<div class="activity-label">`;
+                        output += `Advisory`;
+                        if (advisorName) {
+                            output += ` - ${advisorName}`;
+                        }
+                        output += `</div>`;
+                    } else {
+                        // General activity (office hours, lunch, FLEX, etc.)
+                        output += `<div class="activity-label">${timeBlock.activity}</div>`;
+                    }
+                    
+                    output += `</div>`;
+                    output += `</div>`;
+                });
+                
+                output += `</div>`;
+                
+                // Add custom notes footer if provided
+                if (customNotes) {
+                    output += `<div class="custom-notes-footer">`;
+                    output += `<h4>📌 Notes & Reminders</h4>`;
+                    output += `<div class="custom-notes-content">${customNotes}</div>`;
+                    output += `</div>`;
+                }
+                
+                output += `</div>`;
+            }
+            
+            document.getElementById('output').innerHTML = output;
+        }
+        
+        // Initialize with one default class
+        window.addEventListener('DOMContentLoaded', function() {
+            // Try to load saved data
+            const dataLoaded = loadData();
+            
+            // If no saved data, add one default class
+            if (!dataLoaded) {
+                addClass();
+            }
+            
+            // Add autosave listeners to text inputs
+            document.getElementById('studentName').addEventListener('input', autoSave);
+            document.getElementById('advisorName').addEventListener('input', autoSave);
+            document.getElementById('customNotes').addEventListener('input', autoSave);
+        });
+        
+        // Auto-save before page unload
+        window.addEventListener('beforeunload', function() {
+            saveData();
+        });
+    </script>
+</body>
+</html>
