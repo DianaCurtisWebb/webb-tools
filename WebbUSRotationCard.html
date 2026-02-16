@@ -236,6 +236,19 @@
             margin-top: auto;
         }
         
+        .schedule-note-footer {
+            background: #E8F4F8;
+            border-top: 2px solid #2B7A78;
+            padding: 12px 20px;
+        }
+        
+        .schedule-note-content {
+            color: #2B7A78;
+            font-size: 0.9em;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
         .custom-notes-footer h4 {
             color: #1B5E3F;
             font-size: 0.9em;
@@ -457,6 +470,16 @@
                 font-size: 0.8em;
                 line-height: 1.3;
             }
+            
+            .schedule-note-footer {
+                padding: 8px 15px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .schedule-note-content {
+                font-size: 0.8em;
+            }
         }
         
         @media screen {
@@ -527,7 +550,7 @@
         // Daily schedule structure
         const DAILY_SCHEDULE = [
             { time: '8:00 - 8:10', duration: '10 min', activity: 'Arrival and Prep', type: 'general' },
-            { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours', type: 'general' },
+            { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours*', type: 'general' },
             { time: '8:30 - 8:40', duration: '10 min', activity: 'Advisory', type: 'general' },
             { time: '8:45 - 9:50', duration: '65 min', activity: 'Block 1', type: 'block', blockNum: 1 },
             { time: '9:55 - 10:15', duration: '20 min', activity: 'FLEX 1', type: 'general' },
@@ -535,7 +558,7 @@
             { time: '11:30 - 12:00', duration: '30 min', activity: 'FLEX 2', type: 'general' },
             { time: '12:05 - 1:00', duration: '55 min', activity: 'Lunch', type: 'general' },
             { time: '1:05 - 2:10', duration: '65 min', activity: 'Block 3', type: 'block', blockNum: 3 },
-            { time: '2:15 - 2:35', duration: '20 min', activity: 'Office Hours', type: 'general' },
+            { time: '2:15 - 2:35', duration: '20 min', activity: 'Office Hours*', type: 'general' },
             { time: '2:40 - 3:45', duration: '65 min', activity: 'Block 4', type: 'block', blockNum: 4 }
         ];
         
@@ -843,6 +866,11 @@
                     output += `</div>`;
                 });
                 
+                output += `</div>`;
+                
+                // Add Webb Work Time note (always shows)
+                output += `<div class="schedule-note-footer">`;
+                output += `<div class="schedule-note-content">*Webb Work Time on Wednesdays from 7:50 - 8:20</div>`;
                 output += `</div>`;
                 
                 // Add custom notes footer if provided
