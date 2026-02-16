@@ -660,7 +660,7 @@
         // Middle School daily schedule structure
         const DAILY_SCHEDULE = [
             { time: '7:45 - 8:10', duration: '25 min', activity: 'Classroom Prep', type: 'general' },
-            { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours', type: 'general' },
+            { time: '8:10 - 8:25', duration: '15 min', activity: 'Office Hours*', type: 'general' },
             { time: '8:30 - 8:40', duration: '10 min', activity: 'Assembly', type: 'general' },
             { time: '8:45 - 9:40', duration: '55 min', activity: 'Block 1', type: 'block', blockNum: 1 },
             { time: '9:45 - 10:15', duration: '30 min', activity: 'Activity', type: 'activity' },
@@ -880,6 +880,11 @@
                     output += `</div>`;
                 });
                 
+                output += `</div>`;
+                
+                // Add permanent Webb Work Time note
+                output += `<div style="background: #f8f9fa; border-top: 2px solid #dee2e6; padding: 12px 20px; font-size: 0.85em; color: #666;">`;
+                output += `*Webb Work Time on Wednesdays from 7:50 - 8:20`;
                 output += `</div>`;
                 
                 // Add custom notes footer if provided
