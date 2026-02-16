@@ -518,7 +518,7 @@
         
         // Daily schedule structure - UPDATED to remove Arrival and Prep
         const DAILY_SCHEDULE = [
-            { time: '8:10 - 8:25', duration: '15 min', activity: 'Teacher Office Hours', type: 'general' },
+            { time: '8:10 - 8:25', duration: '15 min', activity: 'Teacher Office Hours*', type: 'general' },
             { time: '8:30 - 8:40', duration: '10 min', activity: 'Advisory', type: 'advisory' },
             { time: '8:45 - 9:50', duration: '65 min', activity: 'Block 1', type: 'block', blockNum: 1 },
             { time: '9:55 - 10:15', duration: '20 min', activity: 'FLEX 1', type: 'general' },
@@ -749,6 +749,11 @@
                     output += `</div>`;
                 });
                 
+                output += `</div>`;
+                
+                // Add office hours disclaimer
+                output += `<div style="padding: 10px 15px; border-top: 1px solid #e0e0e0; background: #fffbf0; font-size: 0.85em; color: #666;">`;
+                output += `*Office Hours not held on Wednesdays`;
                 output += `</div>`;
                 
                 // Add custom notes footer if provided
