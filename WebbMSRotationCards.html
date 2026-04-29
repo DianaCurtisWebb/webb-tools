@@ -475,43 +475,40 @@
                     
                     <div style="margin-bottom: 20px;">
                         <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">Activity Periods (9:45 - 10:15)</h4>
-                        <div style="margin-bottom: 10px; color: #666; font-size: 13px; font-style: italic;">
-                            Note: Days 3 & 4 are always Advisory
+                        <div class="input-group">
+                            <label for="activity13">Days 1 & 3 Activities</label>
+                            <input type="text" id="activity13" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                         <div class="input-group">
-                            <label for="activity1">Activity - Day 1</label>
-                            <input type="text" id="activity1" placeholder="e.g., Duty, Meeting, Planning">
+                            <label for="activity24">Days 2 & 4 Activities</label>
+                            <input type="text" id="activity24" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                         <div class="input-group">
-                            <label for="activity2">Activity - Day 2</label>
-                            <input type="text" id="activity2" placeholder="e.g., Duty, Meeting, Planning">
-                        </div>
-                        <div class="input-group">
-                            <label for="activity5">Activity - Day 5</label>
+                            <label for="activity5">Day 5 Activities</label>
                             <input type="text" id="activity5" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                         <div class="input-group">
-                            <label for="activity6">Activity - Day 6</label>
+                            <label for="activity6">Day 6 Activities</label>
                             <input type="text" id="activity6" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                         <div class="input-group">
-                            <label for="activity7">Activity - Day 7</label>
+                            <label for="activity7">Day 7 Activities</label>
                             <input type="text" id="activity7" placeholder="e.g., Duty, Meeting, Planning">
                         </div>
                     </div>
                     
                     <div>
-                        <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">FLEX Periods (Block 4: varies by day)</h4>
+                        <h4 style="color: #1B5E3F; margin-bottom: 10px; font-size: 1em;">FLEX Periods (1:05 - 2:00)</h4>
                         <div class="input-group">
-                            <label for="flex1">FLEX - Day 1</label>
+                            <label for="flex1">Day 1 FLEX</label>
                             <input type="text" id="flex1" placeholder="e.g., Study Hall, Club Meeting">
                         </div>
                         <div class="input-group">
-                            <label for="flex4">FLEX - Day 4</label>
+                            <label for="flex4">Day 4 FLEX</label>
                             <input type="text" id="flex4" placeholder="e.g., Study Hall, Club Meeting">
                         </div>
                         <div class="input-group">
-                            <label for="flex6">FLEX - Day 6</label>
+                            <label for="flex6">Day 6 FLEX</label>
                             <input type="text" id="flex6" placeholder="e.g., Study Hall, Club Meeting">
                         </div>
                     </div>
@@ -557,8 +554,8 @@
                 flex1: document.getElementById('flex1').value,
                 flex4: document.getElementById('flex4').value,
                 flex6: document.getElementById('flex6').value,
-                activity1: document.getElementById('activity1').value,
-                activity2: document.getElementById('activity2').value,
+                activity13: document.getElementById('activity13').value,
+                activity24: document.getElementById('activity24').value,
                 activity5: document.getElementById('activity5').value,
                 activity6: document.getElementById('activity6').value,
                 activity7: document.getElementById('activity7').value,
@@ -602,8 +599,8 @@
                 if (data.flex1) document.getElementById('flex1').value = data.flex1;
                 if (data.flex4) document.getElementById('flex4').value = data.flex4;
                 if (data.flex6) document.getElementById('flex6').value = data.flex6;
-                if (data.activity1) document.getElementById('activity1').value = data.activity1;
-                if (data.activity2) document.getElementById('activity2').value = data.activity2;
+                if (data.activity13) document.getElementById('activity13').value = data.activity13;
+                if (data.activity24) document.getElementById('activity24').value = data.activity24;
                 if (data.activity5) document.getElementById('activity5').value = data.activity5;
                 if (data.activity6) document.getElementById('activity6').value = data.activity6;
                 if (data.activity7) document.getElementById('activity7').value = data.activity7;
@@ -765,12 +762,12 @@
                 6: document.getElementById('flex6').value || 'FLEX'
             };
             
-            // Get Activity values for each day
+            // Get Activity values - Days 1&3 share, Days 2&4 share, rest are individual
             const activityValues = {
-                1: document.getElementById('activity1').value || 'Activity',
-                2: document.getElementById('activity2').value || 'Activity',
-                3: 'Advisory',  // Always Advisory
-                4: 'Advisory',  // Always Advisory
+                1: document.getElementById('activity13').value || 'Activity',
+                2: document.getElementById('activity24').value || 'Activity',
+                3: document.getElementById('activity13').value || 'Activity',  // Same as Day 1
+                4: document.getElementById('activity24').value || 'Activity',  // Same as Day 2
                 5: document.getElementById('activity5').value || 'Activity',
                 6: document.getElementById('activity6').value || 'Activity',
                 7: document.getElementById('activity7').value || 'Activity'
@@ -860,14 +857,11 @@
                     } else if (timeBlock.type === 'activity') {
                         // This is the Activity period - show badge plus custom text for this day
                         const activityText = activityValues[day];
-                        const isAdvisory = (day === 3 || day === 4);
                         
                         output += `<div class="activity-label has-class">`;
-                        output += `<span class="period-badge">${isAdvisory ? 'Advisory' : 'Activity'}</span>`;
+                        output += `<span class="period-badge">Activity</span>`;
                         
-                        // For Advisory days, don't show additional text since it's always just "Advisory"
-                        // For other days, show custom text if provided and different from default
-                        if (!isAdvisory && activityText && activityText !== 'Activity') {
+                        if (activityText && activityText !== 'Activity') {
                             output += `<span class="class-name">${activityText}</span>`;
                         }
                         output += `</div>`;
