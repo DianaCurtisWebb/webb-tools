@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webb Middle School — My Schedule Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E3F 0%, #8DC63F 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .setup-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .setup-step {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .setup-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: #EF7D34;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #3D4241;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: #3D4241;
+            margin-bottom: 5px;
+        }
+
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input[type="text"]:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+
+        /* Period grid */
+        .periods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        .period-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .period-label-badge {
+            background: #2B7A78;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .period-row input[type="text"] {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .period-row input[type="text"]:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+
+        /* Notes textarea */
+        .notes-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #C9C49D;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.2s;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #1B5E3F;
+        }
+
+        button {
+            background: #1B5E3F;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 94, 63, 0.3);
+            background: #2B7A78;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        /* ── Day Card Styles ── */
+        .day-card {
+            background: white;
+            border: 3px solid #8DC63F;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+
+        .student-name-header {
+            background: #EF7D34;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .day-card-header {
+            background: linear-gradient(135deg, #1B5E3F 0%, #2B7A78 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .day-card-header h2 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .day-card-header .periods-list {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .day-card-body {
+            padding: 20px;
+        }
+
+        .time-block {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 15px 0;
+            align-items: stretch;
+        }
+
+        .time-block:last-child {
+            border-bottom: none;
+        }
+
+        .time-column {
+            width: 140px;
+            padding-right: 20px;
+            border-right: 3px solid #8DC63F;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-label {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #1B5E3F;
+        }
+
+        .duration-label {
+            font-size: 0.82em;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .activity-column {
+            flex: 1;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-label {
+            font-size: 1.05em;
+            color: #3D4241;
+        }
+
+        .activity-label.has-class {
+            font-weight: 600;
+            color: #1B5E3F;
+        }
+
+        .period-badge {
+            background: #2B7A78;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .period-badge.flex-badge {
+            background: #8DC63F;
+        }
+
+        .period-badge.activity-badge {
+            background: #EF7D34;
+        }
+
+        .class-name {
+            color: #EF7D34;
+            font-weight: 600;
+        }
+
+        .custom-notes-footer {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF5DC 100%);
+            border-top: 3px solid #EF7D34;
+            padding: 18px 25px;
+            color: #3D4241;
+        }
+
+        .custom-notes-header {
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #EF7D34;
+        }
+
+        .custom-notes-text {
+            font-size: 1em;
+            font-weight: 500;
+            white-space: pre-wrap;
+            color: #3D4241;
+        }
+
+        .hint-text {
+            font-size: 13px;
+            color: #888;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* Print Styles */
+        @media print {
+            @page {
+                margin: 0.5in;
+                size: letter;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .header,
+            .setup-section,
+            button,
+            .no-print {
+                display: none !important;
+            }
+
+            .content {
+                padding: 0;
+                margin: 0;
+            }
+
+            .output-section {
+                margin: 0;
+                padding: 0;
+            }
+
+            .day-card {
+                page-break-after: always;
+                page-break-inside: avoid;
+                margin: 0;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .day-card:last-child {
+                page-break-after: auto;
+            }
+
+            .student-name-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .day-card-header {
+                padding: 18px 15px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .day-card-body {
+                padding: 18px;
+            }
+
+            .time-block {
+                padding: 9px 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .time-label {
+                font-size: 0.92em;
+            }
+
+            .duration-label {
+                font-size: 0.75em;
+            }
+
+            .activity-label {
+                font-size: 0.92em;
+            }
+
+            .period-badge,
+            .class-name {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .custom-notes-footer {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 0.85em;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Webb Middle School</h1>
+            <p>My 7-Day Rotation Schedule Cards</p>
+        </div>
+
+        <div class="content">
+            <div class="setup-section">
+
+                <!-- Step 1: Student Name -->
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <span class="step-title">Enter Your Name</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="studentName">Your Name</label>
+                        <input type="text" id="studentName" placeholder="First and Last Name">
+                    </div>
+                </div>
+
+                <!-- Step 2: Classes for each period -->
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <span class="step-title">Enter Your Classes</span>
+                    </div>
+                    <p class="hint-text" style="margin-bottom: 14px;">Type the class name for each of your 8 periods. Leave a period blank if it's free.</p>
+                    <div class="periods-grid">
+                        <div class="period-row">
+                            <span class="period-label-badge">A Period</span>
+                            <input type="text" id="class-A" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">B Period</span>
+                            <input type="text" id="class-B" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">C Period</span>
+                            <input type="text" id="class-C" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">D Period</span>
+                            <input type="text" id="class-D" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">E Period</span>
+                            <input type="text" id="class-E" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">F Period</span>
+                            <input type="text" id="class-F" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">G Period</span>
+                            <input type="text" id="class-G" placeholder="Class name">
+                        </div>
+                        <div class="period-row">
+                            <span class="period-label-badge">H Period</span>
+                            <input type="text" id="class-H" placeholder="Class name">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Notes -->
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <span class="step-title">Notes (Optional)</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="studentNotes">Add any notes to appear at the bottom of every card</label>
+                        <textarea class="notes-textarea" id="studentNotes" placeholder="e.g., Locker #42 — Lunch code: 1234 — Bus: Route 7"></textarea>
+                    </div>
+                    <p class="hint-text">Great for reminders, locker numbers, bus routes, or anything you want handy every day.</p>
+                </div>
+
+                <!-- Step 4: Generate -->
+                <div class="setup-step">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
+                        <span class="step-title">Generate Your Cards</span>
+                    </div>
+                    <button onclick="generateCards()">📅 Generate My Schedule Cards</button>
+                    <button onclick="window.print()" style="background: #6c757d;">🖨️ Print / Save as PDF</button>
+                </div>
+            </div>
+
+            <div id="output" class="output-section"></div>
+        </div>
+    </div>
+
+    <script>
+        // ── Schedule Data ─────────────────────────────────────────────
+
+        const DAILY_SCHEDULE = [
+            { time: '7:45 – 8:10',  duration: '25 min', activity: 'Classroom Prep / Arrival', type: 'general' },
+            { time: '8:10 – 8:25',  duration: '15 min', activity: 'Office Hours',             type: 'general' },
+            { time: '8:30 – 8:40',  duration: '10 min', activity: 'Assembly',                 type: 'general' },
+            { time: '8:45 – 9:40',  duration: '55 min', activity: 'Block 1',                  type: 'block', blockNum: 1 },
+            { time: '9:45 – 10:15', duration: '30 min', activity: 'Activity',                 type: 'activity' },
+            { time: '10:20 – 11:15',duration: '55 min', activity: 'Block 2',                  type: 'block', blockNum: 2 },
+            { time: '11:20 – 12:00',duration: '40 min', activity: 'Lunch',                    type: 'general' },
+            { time: '12:05 – 1:00', duration: '55 min', activity: 'Block 3',                  type: 'block', blockNum: 3 },
+            { time: '1:05 – 2:00',  duration: '55 min', activity: 'Block 4',                  type: 'block', blockNum: 4 },
+            { time: '2:10 – 3:05',  duration: '55 min', activity: 'Block 5',                  type: 'block', blockNum: 5 },
+            { time: '3:05 – 3:35',  duration: '30 min', activity: 'Study Hall',               type: 'general' }
+        ];
+
+        // Periods A–H across 7 days; FLEX slots kept for display
+        const ROTATION_SCHEDULE = {
+            1: ['A', 'B', 'C', 'FLEX', 'D'],
+            2: ['E', 'F', 'G', 'A',    'H'],
+            3: ['B', 'C', 'D', 'E',    'F'],
+            4: ['G', 'A', 'H', 'FLEX', 'C'],
+            5: ['E', 'D', 'F', 'B',    'G'],
+            6: ['A', 'B', 'C', 'FLEX', 'H'],
+            7: ['D', 'H', 'G', 'E',    'F']
+        };
+
+        // ── Generate Cards ────────────────────────────────────────────
+
+        function generateCards() {
+            const studentName = document.getElementById('studentName').value.trim() || 'My Schedule';
+            const studentNotes = document.getElementById('studentNotes').value.trim();
+
+            // Build a simple period → class name map
+            const classMap = {};
+            ['A','B','C','D','E','F','G','H'].forEach(p => {
+                const val = document.getElementById('class-' + p).value.trim();
+                if (val) classMap[p] = val;
+            });
+
+            let output = '';
+
+            for (let day = 1; day <= 7; day++) {
+                const dayPeriods = ROTATION_SCHEDULE[day];
+
+                output += `<div class="day-card">`;
+                output += `<div class="student-name-header">${escapeHtml(studentName)}</div>`;
+                output += `<div class="day-card-header">`;
+                output += `<h2>Day ${day}</h2>`;
+                output += `<div class="periods-list">Periods: ${dayPeriods.join(', ')}</div>`;
+                output += `</div>`;
+                output += `<div class="day-card-body">`;
+
+                DAILY_SCHEDULE.forEach(timeBlock => {
+                    output += `<div class="time-block">`;
+
+                    // Time column
+                    output += `<div class="time-column">`;
+                    output += `<div class="time-label">${timeBlock.time}</div>`;
+                    output += `<div class="duration-label">${timeBlock.duration}</div>`;
+                    output += `</div>`;
+
+                    // Activity column
+                    output += `<div class="activity-column">`;
+
+                    if (timeBlock.type === 'block') {
+                        const period = dayPeriods[timeBlock.blockNum - 1];
+
+                        if (period === 'FLEX') {
+                            output += `<div class="activity-label has-class">`;
+                            output += `<span class="period-badge flex-badge">FLEX</span>`;
+                            output += `<span class="class-name">Flex Period</span>`;
+                            output += `</div>`;
+                        } else {
+                            const className = classMap[period];
+                            output += `<div class="activity-label has-class">`;
+                            output += `<span class="period-badge">${period} Period</span>`;
+                            if (className) {
+                                output += `<span class="class-name">${escapeHtml(className)}</span>`;
+                            } else {
+                                output += `<span style="color:#999; font-style:italic; font-weight:400;">Free Period</span>`;
+                            }
+                            output += `</div>`;
+                        }
+
+                    } else if (timeBlock.type === 'activity') {
+                        output += `<div class="activity-label has-class">`;
+                        output += `<span class="period-badge activity-badge">Activity</span>`;
+                        output += `</div>`;
+
+                    } else {
+                        // General (lunch, study hall, etc.)
+                        output += `<div class="activity-label">${timeBlock.activity}</div>`;
+                    }
+
+                    output += `</div>`; // .activity-column
+                    output += `</div>`; // .time-block
+                });
+
+                output += `</div>`; // .day-card-body
+
+                // Webb Work Time note
+                output += `<div style="background:#f8f9fa; border-top:2px solid #dee2e6; padding:10px 20px; font-size:0.85em; color:#666;">`;
+                output += `*Webb Work Time on Wednesdays from 7:50 – 8:20`;
+                output += `</div>`;
+
+                // Student notes footer
+                if (studentNotes) {
+                    output += `<div class="custom-notes-footer">`;
+                    output += `<div class="custom-notes-header">📌 MY NOTES</div>`;
+                    output += `<div class="custom-notes-text">${escapeHtml(studentNotes)}</div>`;
+                    output += `</div>`;
+                }
+
+                output += `</div>`; // .day-card
+            }
+
+            document.getElementById('output').innerHTML = output;
+
+            // Scroll to output on mobile
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ── Utility ───────────────────────────────────────────────────
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
