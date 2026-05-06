@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Lang Evidence Brainstorm</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink: #1A1612;
+    --rust: #C4522A;
+    --gold: #D4A843;
+    --sage: #4A6741;
+    --steel: #3D5A6B;
+    --muted: #7A7268;
+    --border: #D8D0C4;
+    --card-bg: #FDFAF5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--ink);
+    margin-bottom: .3rem;
+    line-height: 1.1;
+  }
+
+  header p {
+    font-size: .9rem;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* STATS */
+  .stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat {
+    flex: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .stat-lbl {
+    font-size: .72rem;
+    color: var(--muted);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* FILTER CHIPS */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+
+  .filter-lbl {
+    font-size: .78rem;
+    color: var(--muted);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-right: 2px;
+  }
+
+  .chip {
+    font-size: .78rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--card-bg);
+    color: var(--muted);
+    transition: all .18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  /* PROMPT CARD */
+  .prompt-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prompt-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rust), var(--gold));
+  }
+
+  .prompt-eyebrow {
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .prompt-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+    min-height: 2.6rem;
+    transition: opacity .25s;
+  }
+
+  .prompt-text.fading { opacity: 0; }
+
+  .cat-badge {
+    display: inline-block;
+    font-size: .75rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--cream);
+    letter-spacing: .04em;
+  }
+
+  /* TIMER */
+  .timer-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .timer-display {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    color: var(--ink);
+    min-width: 76px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    transition: color .3s;
+  }
+
+  .timer-display.urgent { color: var(--rust); }
+
+  .timer-meta {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .timer-meta label {
+    display: block;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .4rem;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--rust);
+    cursor: pointer;
+  }
+
+  .timer-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all .15s;
+    color: var(--ink);
+  }
+
+  .btn-icon:hover { background: var(--cream); border-color: var(--ink); }
+  .btn-icon.playing { background: var(--rust); border-color: var(--rust); color: white; }
+
+  /* ACTION BUTTONS */
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all .15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover { background: var(--cream); border-color: var(--ink); }
+
+  .btn.primary {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+
+  .btn.primary:hover { background: #2e2820; }
+
+  .btn.success {
+    background: var(--sage);
+    color: white;
+    border-color: var(--sage);
+  }
+
+  .btn.success:hover { background: #3a5233; }
+
+  /* PROMPT LIST */
+  .list-toggle {
+    font-size: .82rem;
+    color: var(--muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color .15s;
+  }
+
+  .list-toggle:hover { color: var(--ink); }
+
+  .prompt-list {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .prompt-list.open { display: flex; }
+
+  .list-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .55rem 1rem;
+    font-size: .83rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: all .12s;
+    color: var(--ink);
+  }
+
+  .list-item:hover { border-color: var(--ink); background: var(--cream); }
+
+  .list-item.used {
+    opacity: .45;
+    text-decoration: line-through;
+    cursor: default;
+  }
+
+  .list-item.used:hover { border-color: var(--border); background: var(--card-bg); }
+
+  .list-item .item-cat {
+    font-size: .7rem;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .list-item.current {
+    border-color: var(--rust);
+    background: #FDF4F0;
+  }
+
+  /* SCROLLBAR */
+  .prompt-list::-webkit-scrollbar { width: 4px; }
+  .prompt-list::-webkit-scrollbar-track { background: transparent; }
+  .prompt-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* CONFETTI (quick burst when marking done) */
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
+  .popping { animation: pop .3s ease; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Evidence Brainstorm</h1>
+    <p>AP Language & Composition — argument prompt practice</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="done-count">0</div>
+      <div class="stat-lbl">played</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="left-count">60</div>
+      <div class="stat-lbl">remaining</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="total-count">60</div>
+      <div class="stat-lbl">in category</div>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <span class="filter-lbl">category:</span>
+    <span class="chip active" data-cat="all">all</span>
+    <span class="chip" data-cat="technology">technology</span>
+    <span class="chip" data-cat="society">society</span>
+    <span class="chip" data-cat="values">values</span>
+    <span class="chip" data-cat="language">language</span>
+    <span class="chip" data-cat="knowledge">knowledge</span>
+    <span class="chip" data-cat="identity">identity</span>
+  </div>
+
+  <div class="prompt-card" id="prompt-card">
+    <div class="prompt-eyebrow">current prompt</div>
+    <div class="prompt-text" id="prompt-text">Press "New Prompt" to begin</div>
+    <span class="cat-badge" id="cat-badge">—</span>
+  </div>
+
+  <div class="timer-card">
+    <div class="timer-display" id="timer-display">1:30</div>
+    <div class="timer-meta">
+      <label for="timer-slider">time per round</label>
+      <input type="range" id="timer-slider" min="30" max="300" step="15" value="90">
+    </div>
+    <div class="timer-btns">
+      <button class="btn-icon" id="play-btn" onclick="toggleTimer()" title="Start / Pause">▶</button>
+      <button class="btn-icon" onclick="resetTimer()" title="Reset">↺</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" onclick="nextPrompt(false)">↺ New Prompt</button>
+    <button class="btn success" onclick="nextPrompt(true)">✓ Mark Done + Next</button>
+    <button class="btn" onclick="undoLast()">Undo</button>
+    <button class="btn" onclick="resetAll()">Reset All</button>
+  </div>
+
+  <button class="list-toggle" onclick="toggleList()">▸ <span id="list-lbl">Show all prompts</span></button>
+  <div class="prompt-list" id="prompt-list"></div>
+</div>
+
+<script>
+const ALL = [
+  ["Exploring the unknown","knowledge"],
+  ["Seeking perfection","values"],
+  ["Selfie culture","identity"],
+  ["Humor as social critique","society"],
+  ["Polite speech","language"],
+  ["The value of failure","values"],
+  ["Surveillance and privacy","technology"],
+  ["Convenience vs. autonomy","values"],
+  ["Social media and authenticity","identity"],
+  ["Nostalgia as a cultural force","society"],
+  ["The attention economy","technology"],
+  ["Redefining success","values"],
+  ["The ethics of AI-generated content","technology"],
+  ["Celebrity and public responsibility","society"],
+  ["Cancel culture","society"],
+  ["The role of boredom","knowledge"],
+  ["Overdiagnosis and medicalization","knowledge"],
+  ["Civic engagement in the digital age","society"],
+  ["Fast fashion and consumer ethics","values"],
+  ["The gig economy","society"],
+  ["Standardized testing","knowledge"],
+  ["Misinformation and media literacy","knowledge"],
+  ["The cult of productivity","values"],
+  ["Sports and national identity","identity"],
+  ["The language of apology","language"],
+  ["Algorithmic curation","technology"],
+  ["Virtue signaling","language"],
+  ["The value of solitude","values"],
+  ["Toxic positivity","language"],
+  ["Screen time and childhood","technology"],
+  ["Meritocracy as myth or ideal","society"],
+  ["The monetization of wellness","society"],
+  ["Memory and digital permanence","knowledge"],
+  ["The ethics of extreme sports","values"],
+  ["College admissions and fairness","society"],
+  ["Influencer culture","identity"],
+  ["Gun control rhetoric","language"],
+  ["The romance of the handmade","values"],
+  ["Gatekeeping expertise","knowledge"],
+  ["The aestheticization of protest","society"],
+  ["Wilderness and identity","identity"],
+  ["The language of diagnosis","language"],
+  ["Trigger warnings and safe spaces","knowledge"],
+  ["Generational conflict","society"],
+  ["The outsider in American culture","identity"],
+  ["Crowdsourcing knowledge","knowledge"],
+  ["Hustle culture","values"],
+  ["Inherited wealth and opportunity","society"],
+  ["Empathy fatigue","society"],
+  ["Patriotism vs. nationalism","identity"],
+  ["The right to be forgotten","technology"],
+  ["Rewilding and environmentalism","knowledge"],
+  ["The politics of food","society"],
+  ["Slang and social belonging","language"],
+  ["Manufactured scarcity","society"],
+  ["The myth of multitasking","knowledge"],
+  ["Ghost-writing and authenticity","language"],
+  ["The quantified self","technology"],
+  ["Sports analytics and intuition","knowledge"],
+  ["Public shaming","society"]
+];
+
+let usedIndices = [];
+let currentIdx = -1;
+let activeFilter = "all";
+let timerInterval = null;
+let timerSeconds = 90;
+let originalSeconds = 90;
+let running = false;
+
+function filtered() {
+  return ALL.map((p,i)=>({p,i})).filter(({p})=> activeFilter==="all" || p[1]===activeFilter);
+}
+
+function updateCounts() {
+  const f = filtered();
+  const used = f.filter(({i})=>usedIndices.includes(i)).length;
+  document.getElementById("done-count").textContent = used;
+  document.getElementById("left-count").textContent = f.length - used;
+  document.getElementById("total-count").textContent = f.length;
+}
+
+function nextPrompt(markDone) {
+  if (markDone && currentIdx >= 0 && !usedIndices.includes(currentIdx)) {
+    usedIndices.push(currentIdx);
+  }
+  const f = filtered();
+  const available = f.filter(({i})=>!usedIndices.includes(i));
+  const pt = document.getElementById("prompt-text");
+  pt.classList.add("fading");
+  setTimeout(() => {
+    if (available.length === 0) {
+      pt.textContent = "All prompts used! Hit Reset All to play again.";
+      document.getElementById("cat-badge").textContent = "—";
+    } else {
+      const pick = available[Math.floor(Math.random() * available.length)];
+      currentIdx = pick.i;
+      pt.textContent = "\u201C" + ALL[currentIdx][0] + "\u201D";
+      document.getElementById("cat-badge").textContent = ALL[currentIdx][1];
+    }
+    pt.classList.remove("fading");
+    updateCounts();
+    renderList();
+    resetTimer();
+  }, 220);
+}
+
+function undoLast() {
+  if (usedIndices.length === 0) return;
+  const last = usedIndices.pop();
+  currentIdx = last;
+  document.getElementById("prompt-text").textContent = "\u201C" + ALL[last][0] + "\u201D";
+  document.getElementById("cat-badge").textContent = ALL[last][1];
+  updateCounts();
+  renderList();
+}
+
+function resetAll() {
+  usedIndices = [];
+  currentIdx = -1;
+  document.getElementById("prompt-text").textContent = "Press \u201CNew Prompt\u201D to begin";
+  document.getElementById("cat-badge").textContent = "—";
+  resetTimer();
+  updateCounts();
+  renderList();
+}
+
+// TIMER
+function renderTimer() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const el = document.getElementById("timer-display");
+  el.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  el.classList.toggle("urgent", timerSeconds <= 15 && running);
+}
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(timerInterval);
+    running = false;
+    document.getElementById("play-btn").textContent = "▶";
+    document.getElementById("play-btn").classList.remove("playing");
+    document.getElementById("timer-display").classList.remove("urgent");
+  } else {
+    if (timerSeconds <= 0) timerSeconds = originalSeconds;
+    running = true;
+    document.getElementById("play-btn").textContent = "⏸";
+    document.getElementById("play-btn").classList.add("playing");
+    timerInterval = setInterval(() => {
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        running = false;
+        document.getElementById("play-btn").textContent = "▶";
+        document.getElementById("play-btn").classList.remove("playing");
+        return;
+      }
+      timerSeconds--;
+      renderTimer();
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  running = false;
+  timerSeconds = originalSeconds;
+  document.getElementById("play-btn").textContent = "▶";
+  document.getElementById("play-btn").classList.remove("playing");
+  document.getElementById("timer-display").classList.remove("urgent");
+  renderTimer();
+}
+
+document.getElementById("timer-slider").addEventListener("input", function() {
+  originalSeconds = parseInt(this.value);
+  timerSeconds = originalSeconds;
+  running = false;
+  clearInterval(timerInterval);
+  document.getElementById("play-btn").textContent = "▶";
+  document.getElementById("play-btn").classList.remove("playing");
+  renderTimer();
+});
+
+// FILTER CHIPS
+document.querySelectorAll(".chip").forEach(c => {
+  c.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach(x => x.classList.remove("active"));
+    c.classList.add("active");
+    activeFilter = c.dataset.cat;
+    updateCounts();
+    renderList();
+  });
+});
+
+// PROMPT LIST
+let listOpen = false;
+function toggleList() {
+  listOpen = !listOpen;
+  document.getElementById("prompt-list").classList.toggle("open", listOpen);
+  document.getElementById("list-lbl").textContent = listOpen ? "Hide all prompts" : "Show all prompts";
+}
+
+function renderList() {
+  const el = document.getElementById("prompt-list");
+  const f = filtered();
+  el.innerHTML = "";
+  f.forEach(({p, i}) => {
+    const div = document.createElement("div");
+    const isCurrent = i === currentIdx;
+    const isUsed = usedIndices.includes(i);
+    div.className = "list-item" + (isUsed ? " used" : "") + (isCurrent ? " current" : "");
+    div.innerHTML = `<span>${p[0]}</span><span class="item-cat">${p[1]}</span>`;
+    if (!isUsed) {
+      div.onclick = () => {
+        currentIdx = i;
+        document.getElementById("prompt-text").textContent = "\u201C" + p[0] + "\u201D";
+        document.getElementById("cat-badge").textContent = p[1];
+        resetTimer();
+        renderList();
+      };
+    }
+    el.appendChild(div);
+  });
+}
+
+renderTimer();
+updateCounts();
+renderList();
+</script>
+</body>
+</html>
